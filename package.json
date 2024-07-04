@@ -2,10 +2,33 @@
   "name": "vikmoney",
   "version": "1.0.0",
   "description": "App Kiếm Tiền",
-  "main": "index.js",
+  "main": "/src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon --exec babel-node src/server.js",
+    "build": "babel src -d dist --copy-files",
+    "start:prod": "node dist/server.js",
+    "dev": "nodemon --exec babel-node src/server.js",
+    "migrate": " npx sequelize-cli db:migrate",
+    "down": "npx sequelize-cli db:migrate:undo"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "morgan": "^1.10.0",
+    "pg": "^8.12.0",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.24.7",
+    "@babel/core": "^7.24.7",
+    "@babel/node": "^7.24.7",
+    "@babel/preset-env": "^7.24.7",
+    "nodemon": "^3.1.4",
+    "sequelize-cli": "^6.6.2"
+  }
 }
