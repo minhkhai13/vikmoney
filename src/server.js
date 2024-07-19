@@ -4,6 +4,8 @@ const cors = require("cors");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const connectDB = require("./database/config/connectDB");
+const routes = require('./routes')
+
 dotenv.config();
 
 const app = express();
@@ -13,10 +15,13 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(morgan("dev"));
 
+// parse urlencoded request body
+app.use(express.urlencoded({ extended: true }))
+
+app.use('/api', routes)
+
 // Routes
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
