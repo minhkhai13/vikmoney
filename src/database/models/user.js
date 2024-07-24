@@ -14,15 +14,23 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   User.init({
-    firstName: DataTypes.STRING,
-    lastName: DataTypes.STRING,
+    name: DataTypes.STRING,
     email: DataTypes.STRING,
+    phone_number: DataTypes.STRING,
     password: DataTypes.STRING,
+    accept_token: DataTypes.STRING,
+    refesh_token: DataTypes.STRING,
     role: DataTypes.STRING,
-    image: DataTypes.STRING,
+    birthday: DataTypes.STRING,
+    sex: DataTypes.BOOLEAN,
+    location: DataTypes.STRING,
+    mail_active: DataTypes.BOOLEAN,
+    avatar: DataTypes.STRING,
+    active: DataTypes.BOOLEAN,
+    money: DataTypes.INTEGER,
+    infor_detail: DataTypes.STRING,
     googleId: DataTypes.STRING,
     facebookId: DataTypes.STRING,
-    isVerified: DataTypes.BOOLEAN,
     deletedAt: DataTypes.DATE,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE

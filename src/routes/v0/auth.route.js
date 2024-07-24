@@ -2,14 +2,16 @@ const express = require("express");
 const validate = require("../../middlewares/validate");
 const authValidation = require("../../validate/auth.validate");
 const authController = require("../../controllers/auth.controller");
-const auth = require("../../middlewares/auth");
+const { auth } = require("../../middlewares/auth");
+const passport = require("passport");
 
 const router = express.Router();
 router.get("/", (req, res) => {
   res.send("Hello World!");
 });
 router.post("/login", validate(authValidation.login), authController.login);
-router.post("/logout", validate(authValidation.logout), authController.logout);
+// router.post("/logout", validate(authValidation.logout), authController.logout);
+router.post("/logout", authController.logout);
 router.get("/active", validate(authValidation.active), authController.active);
 router.post(
   "/refresh-tokens",
@@ -38,12 +40,11 @@ router.post(
 );
 router.get(
   "/google",
-  validate(authValidation.googleAuthentication),
-  authController.googleAuthentication
+  passport.authenticate("google", { scope: ["profile", "email"] })
 );
 router.get(
   "/google/callback",
-  validate(authValidation.googleAuthenticationCallBack),
+  passport.authenticate("google", { failureRedirect: "/login" }),
   authController.googleAuthenticationCallBack
 );
 router.get(
