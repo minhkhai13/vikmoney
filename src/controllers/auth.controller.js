@@ -4,7 +4,9 @@ const authService = require("../services/auth.service");
 const config = require('../config/config');
 
 const login = async (req, res) => {
-  res.send("login");
+  const { email, password } = req.body
+  const result = await authService.loginUserWithEmailAndPassword(email, password)
+  res.send(result)
 };
 
 const logout = async (req, res) => {
@@ -54,7 +56,13 @@ const facebookAuthenticationCallBack = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  res.send("register");
+
+  const { email, password, name } = req.body
+  console.log(email, password, name);
+  const user = await authService.register(name, email, password);
+  
+
+  res.send(user);
 };
 
 module.exports = {

@@ -20,6 +20,7 @@ module.exports = {
       30,
     verifyEmailExpirationMinutes: 2,
   },
+  hashRound: 10,
   oauth2: {
     facebookAppId: process.env.FACEBOOK_APP_ID,
     facebookAppSecret: process.env.FACEBOOK_APP_SECRET,
