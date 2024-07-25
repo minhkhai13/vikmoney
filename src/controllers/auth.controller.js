@@ -57,9 +57,9 @@ const facebookAuthenticationCallBack = async (req, res) => {
 
 const register = async (req, res) => {
 
-  const { email, password, name } = req.body
-  console.log(email, password, name);
-  const user = await authService.register(name, email, password);
+  const { email, password, fullName } = req.body
+  console.log(email, password, fullName);
+  const user = await authService.register(fullName, email, password);
   
 
   res.send(user);

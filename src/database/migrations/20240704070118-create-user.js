@@ -9,13 +9,18 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER,
       },
-      name: {
+      user_name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true,
+      },
+      full_name: {
         type: Sequelize.STRING,
         allowNull: true,
       },
       email: {
         type: Sequelize.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: true,
       },
       phone_number: {
@@ -25,6 +30,7 @@ module.exports = {
       password: {
         type: Sequelize.STRING,
         allowNull: true,
+        unique: true,
       },
       accept_token: {
         type: Sequelize.STRING,

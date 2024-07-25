@@ -18,7 +18,7 @@ const configLoginWithGoogle = () => {
         if (user) {
           return cb(null, user);
         } else {
-          user = await userServices.createUser(
+          user = await userServices.createUserMail(
             profile.displayName,
             profile.emails[0].value
           );

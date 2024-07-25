@@ -1,6 +1,8 @@
 const db = require("../database/models/index");
 import bcrypt from "bcryptjs";
+import user from "../database/models/user";
 const config = require("../config/config");
+const { Op } = require('sequelize');
 
 const cleanText = (text) => {
   let value = text || "";
@@ -13,9 +15,10 @@ const getAllUsers = async () => {
   return db.User.findAll();
 };
 
-const createUser = async (name, email, phone_number) => {
+const createUserMail = async (name, email, phone_number) => {
   const user = {
-    name: name,
+    full_name: name,
+    user_name: email,
     email: email,
     role: "user",
     active: true,
@@ -42,7 +45,16 @@ const getUserByEmail = async (email) => {
   return await db.User.findOne({
     where: { email: email },
     raw: true,
-    attributes: ["id", "name", "email", "role","password","active","mail_active"],
+    attributes: [
+      "id",
+      "user_name",
+      "full_name",
+      "email",
+      "role",
+      "password",
+      "active",
+      "mail_active",
+    ],
   });
 };
 
@@ -53,15 +65,18 @@ const createUserWithMailPassword = async (name, email, password) => {
     const cleanName = cleanText(name);
     const hashPassword = await bcrypt.hashSync(password, 10);
     const user = {
-      name: cleanName,
+      full_name: cleanName,
       email: cleanEmail,
+      user_name: cleanEmail,
       password: hashPassword,
       role: "user",
       active: true,
       mail_active: false,
     };
     let checkUser = await db.User.findOne({
-      where: { email: cleanEmail },
+      where: {
+        [Op.or]: [{ email: cleanEmail }, { user_name: cleanEmail }],
+      },
       raw: true,
       attributes: ["id"],
     });
@@ -80,7 +95,7 @@ const createUserWithMailPassword = async (name, email, password) => {
 };
 module.exports = {
   getAllUsers,
-  createUser,
+  createUserMail,
   getUserByEmail,
   createUserWithMailPassword,
 };
