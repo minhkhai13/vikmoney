@@ -29,5 +29,5 @@ module.exports = {
   },
   googleRedirectUrl: `${process.env.HOST}/api/v1/users/google/auth/`,
   // googleRedirectUrlV3: `${process.env.HOST}/api/v0/auth/google/callback`,
-  googleRedirectUrlV3: `http://localhost:3000/api/v0/auth/google/callback`,
+  googleRedirectUrlV3: process.env.GOOGLE_REDIRECT_URL,
 };

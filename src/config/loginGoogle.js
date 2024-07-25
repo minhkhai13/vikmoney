@@ -10,7 +10,7 @@ const configLoginWithGoogle = () => {
       {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:3000/api/v0/auth/google/callback",
+        callbackURL: process.env.GOOGLE_REDIRECT_URL,
       },
     async  function (accessToken, refreshToken, profile, cb) {
         let user = await userServices.getUserByEmail(profile.emails[0].value);
