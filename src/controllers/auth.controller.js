@@ -2,6 +2,7 @@ const passport = require("passport");
 const catchAsync = require("../utils/catchAsync");
 const authService = require("../services/auth.service");
 const config = require('../config/config');
+const tokenService = require("../services/token.service");
 
 const login = async (req, res) => {
   const { email, password } = req.body
@@ -35,7 +36,9 @@ const resetPassword = async (req, res) => {
 };
 
 const sendVerificationEmail = async (req, res) => {
-  res.send("sendVerificationEmail");
+  const { email } = req.body;
+  const result = await authService.sendVerificationEmail(email);
+  res.send(result);
 };
 
 

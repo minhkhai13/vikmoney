@@ -88,6 +88,7 @@ const isPasswordMatch = async (user, password) => {
   return bcrypt.compare(password, user.password);
 };
 
+
 exports.generateGoogleAuthenticationUrl = generateGoogleAuthenticationUrl;
 exports.googleAuthenticationCallBack = googleAuthenticationCallBack;
 exports.register = register;

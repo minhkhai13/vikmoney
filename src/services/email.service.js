@@ -1,7 +1,7 @@
 import Mailgun from 'mailgun-js'
 const config = require('../config/config')
 
-const transport = Mailgun({ apiKey: 'key-d', domain: 'mg.mogul' })
+const transport = Mailgun({ apiKey: '5792ffb8813dbd2a5744b3e1075b052b-0f1db83d-046a8257', domain: 'sandboxe5860c3feb4f421f82f6722be7da3fb8.mailgun.org' })
 
 /**
  * Send an email

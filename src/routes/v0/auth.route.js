@@ -28,11 +28,7 @@ router.post(
   validate(authValidation.resetPassword),
   authController.resetPassword
 );
-router.post(
-  "/send-verification-email",
-  auth(),
-  authController.sendVerificationEmail
-);
+router.post("/send-verification-email", authController.sendVerificationEmail);
 router.post(
   "/verify-email",
   validate(authValidation.verifyEmail),

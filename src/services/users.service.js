@@ -54,6 +54,13 @@ const getUserByEmail = async (email) => {
       "password",
       "active",
       "mail_active",
+      "avatar",
+      "birthday",
+      "sex",
+      "phone_number",
+      "location",
+      "money",
+      "infor_detail",
     ],
   });
 };
