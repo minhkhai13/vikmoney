@@ -1,5 +1,6 @@
 const config = require("../config/config");
 const nodemailer = require("nodemailer");
+const ApiError = require("../utils/ApiError");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -19,8 +20,12 @@ const transporter = nodemailer.createTransport({
  * @returns {Promise}
  */
 const sendEmail = async (to, subject, text) => {
-  const msg = { from: config.email.from, to, subject, text };
-  await transporter.sendMail(msg);
+  try {
+    const msg = { from: config.email.from, to, subject, text };
+    await transporter.sendMail(msg);
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 /**
@@ -54,8 +59,25 @@ const sendVerificationEmail = async (to, token) => {
 To verify your email, click on this link: ${verificationEmailUrl}
 If you did not create an account, then ignore this email.`;
   await sendEmail(to, subject, text);
+  return ApiError.errorCode200("Send email success");
+};
+
+const sendForgotPasswordMail = async (to, token) => {
+  try {
+    const subject = "Forgot password";
+    // replace this url with the link to the reset password page of your front-end app
+    const resetPasswordUrl = `${config.host}/change-password/${to}/${token}`;
+    const text = `Dear user,
+    To reset your password, click on this link: ${resetPasswordUrl}
+    If you did not request any password resets, then ignore this email.`;
+    await sendEmail(to, subject, text);
+    return ApiError.errorCode200("Send email success");
+  } catch (error) {
+    return ApiError.errorCode310(error);
+  }
 };
 
 exports.sendEmail = sendEmail;
 exports.sendResetPasswordEmail = sendResetPasswordEmail;
 exports.sendVerificationEmail = sendVerificationEmail;
+exports.sendForgotPasswordMail = sendForgotPasswordMail;

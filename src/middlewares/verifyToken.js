@@ -1,24 +1,64 @@
 const config = require("../config/config");
 const jwt = require("jsonwebtoken");
+const userService = require("../services/users.service");
+const ApiError = require("../utils/ApiError");
 
 const verifyToken = async (req, res, next) => {
-  const token = req.query.token || req.body.user.token;
-  console.log(token, "tokddddddddddddddddddddden");
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
   if (!token) {
-    return res.status(403).send({ message: "No token provided!" });
+    return res.status(401).send(ApiError.errorCode401());
   }
   try {
-    const userInfo = await jwt.verify(token, config.jwt.secret);
-    if (userInfo) {
+    const userInfo = jwt.verify(token, config.jwt.secret);
+    if (userInfo && userInfo.sub?.user_id) {
+      const dataUser = await userService.getUserById(userInfo.sub?.user_id);
+      if (!dataUser) {
+        return res.status(101).send(ApiError.errorCode101());
+      }
+      if (!dataUser.active) {
+        return res.status(102).send(ApiError.errorCode102());
+      }
+      if (!dataUser.mail_active) {
+        return res.status(100).send(ApiError.errorCode100());
+      }
       req.user = userInfo.sub;
-      console.log(req.user, "req.user");
       next();
     } else {
-      return res.status(401).send({ message: "Unauthorized!" });
+      return res.status(401).send(ApiError.errorCode401());
     }
   } catch (error) {
-    return res.status(401).send({ message: "Unauthorized!" + error });
+    return res.status(401).send(ApiError.errorCode401());
   }
 };
 
-module.exports = verifyToken;
+const verifyTokenSendMail = async (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const tokenLogin = authHeader && authHeader.split(" ")[1];
+  console.log(tokenLogin, "tokenLogin");
+  if (!tokenLogin) {
+    return res.status(401).send(ApiError.errorCode401());
+  }
+  try {
+    const userInfo = jwt.verify(tokenLogin, config.jwt.secret);
+    console.log(userInfo, "userInfo");
+    if (userInfo && userInfo.sub?.user_id) {
+      const dataUser = await userService.getUserById(userInfo.sub?.user_id);
+      if (!dataUser) {
+        return res.status(200).send(ApiError.errorCode101());
+      }
+      if (!dataUser.active) {
+        return res.status(200).send(ApiError.errorCode102());
+      }
+      req.user = userInfo.sub;
+      next();
+    } else {
+      return res.status(200).send(ApiError.errorCode401());
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(200).send(ApiError.errorCode401());
+  }
+};
+
+module.exports = { verifyToken, verifyTokenSendMail };

@@ -5,9 +5,8 @@ const config = require("../config/config");
 const tokenService = require("../services/token.service");
 const emailService = require("../services/email.service");
 const login = async (req, res) => {
-  console.log(req.isAuthenticated(), "req.isAuthenticated()");
-  if(req.isAuthenticated ()){
-    return res.redirect('http://localhost:3000/');
+  if (req.isAuthenticated()) {
+    return res.redirect("http://localhost:3000/");
   }
   passport.authenticate("local", (err, user, info) => {
     if (err) {
@@ -30,47 +29,57 @@ const logout = async (req, res) => {
   res.send("logout");
 };
 
+const updatePassword = async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const userInfo = req.user;
+  const result = await authService.updatePassword(oldPassword, newPassword, userInfo);
+  res.status(200).send(result);
+}
 const active = async (req, res) => {
   res.send("active");
 };
 
 const verifyEmail = catchAsync(async (req, res) => {
-  await authService.verifyEmail(req.query.token);
-  res.send(verifyEmail);
+  const result = await authService.verifyEmail(req.query.token);
+  res.send(result);
 });
 
 const refreshTokens = async (req, res) => {
   res.send("refreshTokens");
 };
 
-const forgotPassword = async (req, res) => {
-  res.send("forgotPassword");
+const forgotPasswordMail = async (req, res) => {
+  const emailForgot = req.body.email;
+  const result = await authService.forgotPasswordMail(emailForgot);
+
+  res.status(200).send(result);
 };
 
 const resetPassword = async (req, res) => {
-  res.send("resetPassword");
+  const token = req.query.token;
+  const password = req.body.password;
+  const result = await authService.resetPassword(token, password);
+  res.status(200).send(result);
 };
 
 const sendVerificationEmail = async (req, res) => {
-  const user  = req.user;
-  console.log(user, "user");
+  const user = req.user;
   const email = user.email;
-  const tokenVerifyMail = await tokenService.generateAuthTokensVerifyEmail(user);
-  console.log(tokenVerifyMail, "tokenVerifyMail");
+  const tokenVerifyMail = await tokenService.generateAuthTokensVerifyEmail(
+    user
+  );
   const result = await emailService.sendVerificationEmail(
     email,
     tokenVerifyMail
   );
-  res.send(result);
+  res.status(200).send(result);
 };
 
 const googleAuthenticationCallBack = catchAsync(async (req, res) => {
-  console.log(req.query, "req.query");
   const result = await emailService.googleAuthenticationCallBack(
     req.user,
     req.query.redirectUrl
   );
-  console.log(result, "result");
   res.redirect(result);
 });
 
@@ -86,7 +95,6 @@ const register = async (req, res) => {
   const { email, password, fullName } = req.body;
   console.log(email, password, fullName);
   const user = await authService.register(fullName, email, password);
-
   res.send(user);
 };
 
@@ -96,11 +104,12 @@ module.exports = {
   active,
   verifyEmail,
   refreshTokens,
-  forgotPassword,
+  forgotPasswordMail,
   resetPassword,
   sendVerificationEmail,
   googleAuthenticationCallBack,
   facebookAuthentication,
   facebookAuthenticationCallBack,
   register,
+  updatePassword,
 };

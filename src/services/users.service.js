@@ -1,6 +1,9 @@
 const db = require("../database/models/index");
 import bcrypt from "bcryptjs";
+import { up } from "../database/migrations/create-token";
 const { Op } = require("sequelize");
+const ApiError = require("../utils/ApiError");
+const config = require("../config/config");
 
 const cleanText = (text) => {
   let value = text || "";
@@ -63,12 +66,24 @@ const getUserByEmail = async (email) => {
   });
 };
 
+const getUserById = async (id) => {
+  try {
+    return await db.User.findOne({
+      where: { id: id },
+      raw: true,
+      attributes: ["id", "user_name", "role", "active", "mail_active"],
+    });
+  } catch (error) {
+    ApiError.errorCode310(error);
+  }
+};
+
 const createUserWithMailPassword = async (name, email, password) => {
   // hash pasword
   try {
     const cleanEmail = cleanText(email);
     const cleanName = cleanText(name);
-    const hashPassword = await bcrypt.hashSync(password, 10);
+    const hashPassword = await bcrypt.hashSync(password, config.hashRound);
     const user = {
       full_name: cleanName,
       email: cleanEmail,
@@ -100,18 +115,41 @@ const createUserWithMailPassword = async (name, email, password) => {
 };
 
 const isActiveMail = async (id) => {
-  //udaate mail_active = true
-  return await db.User.update(
-    { mail_active: true },
-    {
-      where: { id: id },
-    }
-  );
+  try {
+    return await db.User.update(
+      { mail_active: true },
+      {
+        where: { id: id },
+      }
+    );
+  } catch (error) {
+    throw ApiError.errorCode310(error);
+  }
 };
+
+const updatePassword = async (id, userName, password) => {
+
+  try {
+    const hashPassword = await bcrypt.hashSync(password, config.hashRound);
+    await db.User.update(
+      { password: hashPassword ,updatedAt: new Date()},
+      {
+        where: { id: id , user_name: userName},
+      }
+    );
+    return ApiError.errorCode200("Update password success");
+  }
+  catch (error) {
+    return ApiError.errorCode310(error);
+  }
+}
+
 module.exports = {
   getAllUsers,
   createUserMail,
   getUserByEmail,
   createUserWithMailPassword,
   isActiveMail,
+  getUserById,
+  updatePassword
 };

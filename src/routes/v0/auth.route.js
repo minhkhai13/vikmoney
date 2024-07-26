@@ -17,26 +17,35 @@ router.post("/login", validate(authValidation.login), authController.login);
 router.post("/logout", authController.logout);
 router.get("/active", validate(authValidation.active), authController.active);
 router.post(
+  "/update-password",
+  validate(authValidation.updatePassword),verifyToken.verifyToken,
+  authController.updatePassword
+);
+
+router.post(
   "/refresh-tokens",
   validate(authValidation.refreshTokens),
   authController.refreshTokens
 );
+
 router.post(
-  "/forgot-password",
-  validate(authValidation.forgotPassword),
-  authController.forgotPassword
+  "/send-mail-forgot-password",
+  validate(authValidation.forgotPasswordMail),
+  authController.forgotPasswordMail
 );
 router.post(
   "/reset-password",
   validate(authValidation.resetPassword),
   authController.resetPassword
 );
+
 router.post(
   "/send-verification-email",
-  verifyToken,
+  verifyToken.verifyTokenSendMail,
   authController.sendVerificationEmail
 );
-router.post("/verify-email", verifyToken, authController.verifyEmail);
+router.post("/verify-email", authController.verifyEmail);
+
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })

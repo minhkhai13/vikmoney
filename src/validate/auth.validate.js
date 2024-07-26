@@ -7,6 +7,12 @@ const login = {
     password: Joi.string().required(),
   }),
 };
+const updatePassword = {
+  body: Joi.object().keys({
+    oldPassword: Joi.string().required().custom(password),
+    newPassword: Joi.string().required().custom(password),
+  }),
+};
 
 const googleAuthentication = {
   query: Joi.object().keys({
@@ -34,7 +40,7 @@ const logout = {
   }),
 };
 
-const forgotPassword = {
+const forgotPasswordMail = {
   body: Joi.object().keys({
     email: Joi.string().email().required(),
   }),
@@ -77,7 +83,7 @@ module.exports = {
   logout,
   active,
   verifyEmail,
-  forgotPassword,
+  forgotPasswordMail,
   resetPassword,
   refreshTokens,
   facebookAuthentication,
@@ -85,4 +91,5 @@ module.exports = {
   googleAuthenticationCallBack,
   facebookAuthenticationCallBack,
   register,
+  updatePassword,
 };

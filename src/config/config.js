@@ -14,10 +14,11 @@ module.exports = {
   },
   jwt: {
     secret: "envVars.JWT_SECRET",
+    forgotPasswordSecret: "process.env.JWT_FORGOT_PASSWORD_SECRET",
     accessExpirationMinutes: 300,
     refreshExpirationDays: 7,
-    resetPasswordExpirationMinutes:
-      30,
+    resetPasswordExpirationMinutes: 30,
+    forgotPasswordExpirationMinutes: 30,
     verifyEmailExpirationMinutes: 300,
   },
   hashRound: 10,
@@ -27,10 +28,16 @@ module.exports = {
     googleAppId: process.env.GOOGLE_CLIENT_ID,
     googleAppSecret: process.env.GOOGLE_CLIENT_SECRET,
   },
+  tokenType:{
+    access: "access",
+    refresh: "refresh",
+    verifyEmail: "verifyEmail",
+    forgotPassword: "forgotPassword",
+  },
   googleRedirectUrl: `${process.env.HOST}/api/v1/users/google/auth/`,
   // googleRedirectUrlV3: `${process.env.HOST}/api/v0/auth/google/callback`,
   googleRedirectUrlV3: process.env.GOOGLE_REDIRECT_URL,
-  email:{
+  email: {
     from: process.env.EMAIL_FROM,
-  }
+  },
 };

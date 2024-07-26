@@ -2,7 +2,8 @@ const moment = require("moment");
 const config = require("../config/config");
 const jwt = require("jsonwebtoken");
 const db = require("../database/models/index");
-const { Json } = require("sequelize/lib/utils");
+const ApiError = require("../utils/ApiError");
+const e = require("express");
 
 const generateToken = (
   user,
@@ -15,12 +16,12 @@ const generateToken = (
       email: user.email,
       full_name: user.full_name,
       user_name: user.user_name,
-      user_id: user.user_id,
+      user_id: user.id,
       mail_active: user.mail_active,
       role: user.role,
       avatar: user.avatar,
       birthday: user.birthday,
-      sex:user.sex,
+      sex: user.sex,
       phone_number: user.phone_number,
       location: user.location,
       money: user.money,
@@ -41,24 +42,13 @@ const generateAuthTokens = async (user) => {
     "minutes"
   );
   console.log(user, "user");
-  const accessToken = generateToken(
-    user,
-    accessTokenExpires,
-    roles,
-  );
+  const accessToken = generateToken(user, accessTokenExpires, roles);
 
   const refreshTokenExpires = moment().add(
     config.jwt.refreshExpirationDays,
     "days"
   );
   const refreshToken = generateToken(user.id, refreshTokenExpires, roles);
-  // await saveToken(
-  //   refreshToken,
-  //   user.id,
-  //   refreshTokenExpires,
-  //   tokenTypes.REFRESH
-  // );
-
   return {
     access: {
       token: accessToken,
@@ -70,7 +60,8 @@ const generateAuthTokens = async (user) => {
 };
 
 const generateAuthTokensVerifyEmail = async (user) => {
-  const tokenVerifyMail = await generateToken(
+  user.id = !user.id ? user.user_id : user.id;
+  const tokenVerifyMail = generateToken(
     user,
     moment().add(config.jwt.verifyEmailExpirationMinutes, "minutes"),
     user.roles
@@ -83,50 +74,83 @@ const generateAuthTokensVerifyEmail = async (user) => {
     type: "verifyEmail",
   });
 
-  if(!saveToken){
-    return {status: "error", message: "Error"};
+  if (!saveToken) {
+    return ApiError.errorCode310("Error save token");
   }
   return tokenVerifyMail;
 };
 
-const getTokensVerifyMail = async (token,userId) => {
-  userId = JSON.stringify(userId);
-  return await db.Token.findOne({
-    where: { user_id: userId, token: token, type: "verifyEmail" },
-    attributes:["id","user_id","token","type"],
-    raw: true,
-  });
+const generateAuthTokensForgotPassword = async (user) => {
+  try {
+    const tokenForgotPassword = generateToken(
+      user,
+      moment().add(config.jwt.forgotPasswordExpirationMinutes, "minutes"),
+      user.roles,
+      config.jwt.forgotPasswordSecret
+    );
+    // await saveToken
+    const saveToken = await db.Token.create({
+      token: tokenForgotPassword,
+      user_id: user.id,
+      expires: moment()
+        .add(config.jwt.forgotPasswordExpirationMinutes, "minutes")
+        .toISOString(),
+      type: "forgotPassword",
+    });
+
+    if (!saveToken) {
+      return ApiError.errorCode310("Error save token");
+    }
+    return { errorcode: 200, tokenForgotPassword };
+  } catch (error) {
+    return ApiError.errorCode310(error);
+  }
 };
 
-const deleteTokenVerifyMail = async (userId, token) => {
-  return await db.Token.destroy({
-    where: { user_id: userId, token: token, type: "verifyEmail" },
-  });
+const getTokensVerifyMail = async (token, userId, type = "verifyEmail") => {
+  try {
+    userId = JSON.stringify(userId);
+    console.log(userId, "userId");
+    console.log(token, "token");
+    console.log(type, "type");
+    return await db.Token.findOne({
+      where: { user_id: userId, token: token, type: type },
+      attributes: ["id", "user_id", "token", "type"],
+      raw: true,
+    });
+  } catch (error) {
+    throw ApiError.errorCode310(error);
+  }
+};
+
+const deleteTokenVerifyMail = async (userId, token, type = "verifyEmail") => {
+  try {
+    return await db.Token.destroy({
+      where: { user_id: userId, token: token, type: type },
+    });
+  } catch (error) {
+    throw ApiError.errorCode310(error);
+  }
 };
 const verifyToken = async (token, type) => {
-  let payload
+  let payload;
   try {
-    payload = jwt.verify(token, config.jwt.secret)
+    payload = jwt.verify(token, config.jwt.secret);
   } catch (e) {
-    console.log(e, "==================error================ );");
-    throw  'Token invalid' + e ;
+    return ApiError.errorCode203();
   }
-  console.log(payload, "===========wwwwwwwwwwww==================token");
-
-  const userId = payload.sub?.user_id
-  console.log(userId, "=============================userId");
-  const tokenDoc = await getTokensVerifyMail(token, userId)
-  console.log(tokenDoc, "=============================tokenDoc");
-  if (!tokenDoc) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Token not found')
+  console.log(payload, "payload");
+  const userId = payload.sub?.user_id;
+  const tokenDoc = await getTokensVerifyMail(token, userId);
+  if (!tokenDoc || !tokenDoc.user_id) {
+    throw ApiError.errorCode201();
   }
-  return tokenDoc
-}
-
+  return { errorcode: 200, user_id: tokenDoc.user_id };
+};
 
 exports.generateAuthTokens = generateAuthTokens;
 exports.generateAuthTokensVerifyEmail = generateAuthTokensVerifyEmail;
 exports.getTokensVerifyMail = getTokensVerifyMail;
 exports.deleteTokenVerifyMail = deleteTokenVerifyMail;
 exports.verifyToken = verifyToken;
-
+exports.generateAuthTokensForgotPassword = generateAuthTokensForgotPassword;
