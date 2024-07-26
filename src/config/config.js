@@ -14,11 +14,11 @@ module.exports = {
   },
   jwt: {
     secret: "envVars.JWT_SECRET",
-    accessExpirationMinutes: 30,
+    accessExpirationMinutes: 300,
     refreshExpirationDays: 7,
     resetPasswordExpirationMinutes:
       30,
-    verifyEmailExpirationMinutes: 2,
+    verifyEmailExpirationMinutes: 300,
   },
   hashRound: 10,
   oauth2: {
@@ -30,4 +30,7 @@ module.exports = {
   googleRedirectUrl: `${process.env.HOST}/api/v1/users/google/auth/`,
   // googleRedirectUrlV3: `${process.env.HOST}/api/v0/auth/google/callback`,
   googleRedirectUrlV3: process.env.GOOGLE_REDIRECT_URL,
+  email:{
+    from: process.env.EMAIL_FROM,
+  }
 };

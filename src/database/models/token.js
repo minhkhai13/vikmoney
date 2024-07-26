@@ -19,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
     expires: DataTypes.STRING,
     user_id: DataTypes.STRING,
     blacklisted: DataTypes.STRING,
-    facebookId: DataTypes.STRING,
     deletedAt: DataTypes.DATE,
     createdAt: DataTypes.DATE,
     updatedAt: DataTypes.DATE

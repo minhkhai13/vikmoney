@@ -41,6 +41,7 @@ const auth =
   };
 
 const isLogin = (req, res, next) => {
+  console.log(req.isAuthenticated(), "req.isAuthenticated()");
   if (req.isAuthenticated()) {
     if(req.path === "/login") {
       return res.redirect("/");

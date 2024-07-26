@@ -1,28 +1,9 @@
 const tokenService = require("./token.service");
-const googleConfig = require("../config/google");
 const config = require("../config/config");
 const constant = require("../config/constant");
 const userService = require("./users.service");
-import bcrypt from "bcryptjs";
 
-/**
- * Generate redirect url for Google OAuth
- * @param {string} session
- * @param {String} redirectUrl
- * @returns {Promise}
- */
-const generateGoogleAuthenticationUrl = async (session, redirectUrl) => {
-  // const scope = ["email", "profile"];
-  const scope = [
-    "https://www.googleapis.com/auth/userinfo.profile",
-    "https://www.googleapis.com/auth/userinfo.email",
-  ];
-  return googleConfig.googleOAuthClient(session).generateAuthUrl({
-    access_type: "offline",
-    scope,
-    state: JSON.stringify({ session, redirectUrl }),
-  });
-};
+import bcrypt from "bcryptjs";
 
 /**
  * Callback from Google OAuth
@@ -51,13 +32,14 @@ const register = async (name, email, password) => {
     email,
     password
   );
-  return user;
+  const token = await tokenService.generateAuthTokens(user);
+  console.log("token", token);
+  return token;
   // res.send("register");
 };
 const loginUserWithEmailAndPassword = async (email, password) => {
   try {
     const user = await userService.getUserByEmail(email);
-    console.log(user);
     if (!user) {
       return { status: "error", message: "User not found" };
     }
@@ -65,10 +47,10 @@ const loginUserWithEmailAndPassword = async (email, password) => {
     if (!islogin) {
       return { status: "error", message: "Password not match" };
     }
-    if(user.active === false){
+    if (user.active === false) {
       return { status: "error", message: "Your account is block" };
     }
-    if(user.mail_active === false){
+    if (user.mail_active === false) {
       return { status: "error", message: "Your account is not active" };
     }
     const token = await tokenService.generateAuthTokens(user);
@@ -88,8 +70,25 @@ const isPasswordMatch = async (user, password) => {
   return bcrypt.compare(password, user.password);
 };
 
-
-exports.generateGoogleAuthenticationUrl = generateGoogleAuthenticationUrl;
+const verifyEmail = async (verifyEmailToken) => {
+  console.log("token", verifyEmailToken);
+  try {
+    const verifyEmailTokenDoc = await tokenService.verifyToken(
+      verifyEmailToken,
+      "verifyEmail"
+    );
+    console.log("verifyEmailTokenDoc", verifyEmailTokenDoc);
+    const user = await userService.isActiveMail(verifyEmailTokenDoc.user_id);
+    console.log("usssssssssssssssssssssssssssssssssssssssssssssssssser", user);
+    if (!user) {
+      throw new Error();
+    }
+    await tokenService.deleteTokenVerifyMail(verifyEmailTokenDoc.user_id, verifyEmailToken);
+  } catch (error) {
+    throw  "Email verification failed" + error;
+  }
+};
 exports.googleAuthenticationCallBack = googleAuthenticationCallBack;
 exports.register = register;
 exports.loginUserWithEmailAndPassword = loginUserWithEmailAndPassword;
+exports.verifyEmail = verifyEmail;

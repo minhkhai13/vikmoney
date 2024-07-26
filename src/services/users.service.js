@@ -1,8 +1,6 @@
 const db = require("../database/models/index");
 import bcrypt from "bcryptjs";
-import user from "../database/models/user";
-const config = require("../config/config");
-const { Op } = require('sequelize');
+const { Op } = require("sequelize");
 
 const cleanText = (text) => {
   let value = text || "";
@@ -100,9 +98,20 @@ const createUserWithMailPassword = async (name, email, password) => {
     return { message: "Error" };
   }
 };
+
+const isActiveMail = async (id) => {
+  //udaate mail_active = true
+  return await db.User.update(
+    { mail_active: true },
+    {
+      where: { id: id },
+    }
+  );
+};
 module.exports = {
   getAllUsers,
   createUserMail,
   getUserByEmail,
   createUserWithMailPassword,
+  isActiveMail,
 };

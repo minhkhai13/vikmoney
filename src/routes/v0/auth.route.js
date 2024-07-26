@@ -2,14 +2,17 @@ const express = require("express");
 const validate = require("../../middlewares/validate");
 const authValidation = require("../../validate/auth.validate");
 const authController = require("../../controllers/auth.controller");
-const { auth } = require("../../middlewares/auth");
+const { auth, isLogin } = require("../../middlewares/auth");
+const verifyToken = require("../../middlewares/verifyToken");
 const passport = require("passport");
 
 const router = express.Router();
 router.get("/", (req, res) => {
   res.send("Hello World!");
 });
+// router.post("/login", validate(authValidation.login), authController.login);
 router.post("/login", validate(authValidation.login), authController.login);
+
 // router.post("/logout", validate(authValidation.logout), authController.logout);
 router.post("/logout", authController.logout);
 router.get("/active", validate(authValidation.active), authController.active);
@@ -28,12 +31,12 @@ router.post(
   validate(authValidation.resetPassword),
   authController.resetPassword
 );
-router.post("/send-verification-email", authController.sendVerificationEmail);
 router.post(
-  "/verify-email",
-  validate(authValidation.verifyEmail),
-  authController.verifyEmail
+  "/send-verification-email",
+  verifyToken,
+  authController.sendVerificationEmail
 );
+router.post("/verify-email", verifyToken, authController.verifyEmail);
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
