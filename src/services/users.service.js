@@ -1,8 +1,7 @@
 const db = require("../database/models/index");
 import bcrypt from "bcryptjs";
-import { up } from "../database/migrations/create-token";
 const { Op } = require("sequelize");
-const ApiError = require("../utils/ApiError");
+const ApiError = require("../utils/APIError");
 const config = require("../config/config");
 
 const cleanText = (text) => {

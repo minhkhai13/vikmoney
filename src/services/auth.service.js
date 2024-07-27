@@ -2,13 +2,11 @@ const tokenService = require("./token.service");
 const config = require("../config/config");
 const constant = require("../config/constant");
 const userService = require("./users.service");
-const ApiError = require("../utils/ApiError");
+const ApiError = require("../utils/APIError");
 const emailService = require("./email.service");
 const jwt = require("jsonwebtoken");
 
-import bcrypt from "bcryptjs";
-import e from "express";
-import { error } from "winston";
+const bcrypt = require("bcryptjs");
 
 /**
  * Callback from Google OAuth
