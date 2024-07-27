@@ -92,9 +92,9 @@ const facebookAuthenticationCallBack = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const { email, password, fullName } = req.body;
-  console.log(email, password, fullName);
-  const user = await authService.register(fullName, email, password);
+  const { username, password, fullName } = req.body;
+  console.log(username, password, fullName);
+  const user = await authService.register(fullName, username, password);
   res.send(user);
 };
 

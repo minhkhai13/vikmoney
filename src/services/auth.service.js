@@ -31,16 +31,24 @@ const googleAuthenticationCallBack = async (user, redirectUrl = null) => {
 };
 
 const register = async (name, email, password) => {
-  console.log(email, password, name);
-  const user = await userService.createUserWithMailPassword(
-    name,
-    email,
-    password
-  );
-  const token = await tokenService.generateAuthTokens(user);
-  console.log("token", token);
-  return token;
-  // res.send("register");
+  try {
+    console.log(email, password, name);
+    const user = await userService.createUserWithMailPassword(
+      name,
+      email,
+      password
+    );
+    if (user.errorcode != 200) {
+      return user;
+    }
+    const userInfo = user.data;
+    const token = await tokenService.generateAuthTokens(userInfo);
+    console.log("token", token);
+    return ApiError.errorCode200("Register succsess", token);
+  } catch (error) {
+    console.log(error);
+    return ApiError.errorCode310(error);
+  }
 };
 const loginUserWithEmailAndPassword = async (email, password) => {
   try {

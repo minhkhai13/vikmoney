@@ -45,7 +45,9 @@ const errorCode203 = () => {
 const errorCode204 = () => {
   return { errorcode: 204, message: "User not found", data: null };
 }
-
+const errorCode205 = () => {
+  return { errorcode: 205, message: "Email already exists", data: null };
+}
 // error database
 // 310
 // Lỗi data base
@@ -98,6 +100,7 @@ module.exports = {
   errorCode202,
   errorCode203,
   errorCode204,
+  errorCode205,
   errorCode310,
   errorCode401,
   errorCode403,

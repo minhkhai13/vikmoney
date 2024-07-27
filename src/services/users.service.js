@@ -102,15 +102,13 @@ const createUserWithMailPassword = async (name, email, password) => {
     });
     console.log("checkUser, ", checkUser);
     if (checkUser) {
-      return { message: "Email already exists" };
+      return ApiError.errorCode205();
     }
-    console.log("user", user);
     const result = await db.User.create(user);
-    console.log("result", result);
-    return result;
+    return ApiError.errorCode200("Create user success", result);
   } catch (error) {
     console.log(error);
-    return { message: "Error" };
+    return ApiError.errorCode310(error);
   }
 };
 
