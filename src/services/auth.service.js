@@ -85,27 +85,33 @@ const isPasswordMatch = async (user, password) => {
 
 const verifyEmail = async (verifyEmailToken) => {
   try {
-    const verifyEmailTokenDoc = await tokenService.verifyToken(
+    let verifyEmailTokenDoc = await tokenService.verifyToken(
       verifyEmailToken,
       "verifyEmail"
     );
     if (verifyEmailTokenDoc.errorcode != 200) {
       return verifyEmailTokenDoc;
     }
-    const user = await userService.isActiveMail(verifyEmailTokenDoc.user_id);
+    let tokenDoc = verifyEmailTokenDoc.tokenDoc;
+    const user = await userService.isActiveMail(tokenDoc.user_id);
     if (!user) {
-      throw ApiError.errorCode204();
+      return ApiError.errorCode204();
     }
     const deleToken = await tokenService.deleteTokenVerifyMail(
-      verifyEmailTokenDoc.user_id,
+      tokenDoc.user_id,
       verifyEmailToken
     );
     if (!deleToken) {
       throw ApiError.errorCode310("Delete token error");
     }
-    return ApiError.errorCode200("Active success", null);
+    let dataToken = verifyEmailTokenDoc.payload?.sub;
+    dataToken.mail_active = true;
+    dataToken.id = dataToken.user_id;
+    const token = await tokenService.generateAuthTokens(dataToken);
+    return ApiError.errorCode200("Active success", { token: token });
   } catch (error) {
-    return error;
+    console.log(error);
+    return (error);
   }
 };
 

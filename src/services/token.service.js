@@ -144,7 +144,7 @@ const verifyToken = async (token, type) => {
   if (!tokenDoc || !tokenDoc.user_id) {
     throw ApiError.errorCode201();
   }
-  return { errorcode: 200, user_id: tokenDoc.user_id };
+  return { errorcode: 200, tokenDoc: tokenDoc ,payload:payload};
 };
 
 exports.generateAuthTokens = generateAuthTokens;
