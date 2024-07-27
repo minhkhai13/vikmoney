@@ -38,6 +38,9 @@ module.exports = {
   // googleRedirectUrlV3: `${process.env.HOST}/api/v0/auth/google/callback`,
   googleRedirectUrlV3: process.env.GOOGLE_REDIRECT_URL,
   email: {
+    passMail: process.env.PASS_MAIL,
     from: process.env.EMAIL_FROM,
+    urlVerifyEmail: process.env.URL_VERIFY_EMAIL,
+    urlForgotPassword: process.env.URL_FORGOT_PASSWORD,
   },
 };

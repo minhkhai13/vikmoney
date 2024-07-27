@@ -44,7 +44,7 @@ const register = async (name, email, password) => {
     const userInfo = user.data;
     const token = await tokenService.generateAuthTokens(userInfo);
     console.log("token", token);
-    return ApiError.errorCode200("Register succsess", token);
+    return ApiError.errorCode200("Register succsess", { token: token });
   } catch (error) {
     console.log(error);
     return ApiError.errorCode310(error);
