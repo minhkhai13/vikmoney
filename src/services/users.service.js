@@ -1,7 +1,7 @@
 const db = require("../database/models/index");
 import bcrypt from "bcryptjs";
 const { Op } = require("sequelize");
-const ApiError = require("../utils/APIError");
+const ApiError = require("../utils/apiError");
 const config = require("../config/config");
 
 const cleanText = (text) => {
@@ -125,21 +125,19 @@ const isActiveMail = async (id) => {
 };
 
 const updatePassword = async (id, userName, password) => {
-
   try {
     const hashPassword = await bcrypt.hashSync(password, config.hashRound);
     await db.User.update(
-      { password: hashPassword ,updatedAt: new Date()},
+      { password: hashPassword, updatedAt: new Date() },
       {
-        where: { id: id , user_name: userName},
+        where: { id: id, user_name: userName },
       }
     );
     return ApiError.errorCode200("Update password success");
-  }
-  catch (error) {
+  } catch (error) {
     return ApiError.errorCode310(error);
   }
-}
+};
 
 module.exports = {
   getAllUsers,
@@ -148,5 +146,5 @@ module.exports = {
   createUserWithMailPassword,
   isActiveMail,
   getUserById,
-  updatePassword
+  updatePassword,
 };

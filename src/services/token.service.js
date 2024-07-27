@@ -2,8 +2,7 @@ const moment = require("moment");
 const config = require("../config/config");
 const jwt = require("jsonwebtoken");
 const db = require("../database/models/index");
-const ApiError = require("../utils/APIError");
-const e = require("express");
+const ApiError = require("../utils/apiError");
 
 const generateToken = (
   user,

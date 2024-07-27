@@ -1,6 +1,6 @@
 const passport = require("passport");
 const httpStatus = require("http-status");
-const ApiError = require("../utils/APIError");
+const ApiError = require("../utils/apiError");
 
 const verifyCallback =
   (req, resolve, reject, requiredRights) => async (err, user, info) => {
@@ -43,7 +43,7 @@ const auth =
 const isLogin = (req, res, next) => {
   console.log(req.isAuthenticated(), "req.isAuthenticated()");
   if (req.isAuthenticated()) {
-    if(req.path === "/login") {
+    if (req.path === "/login") {
       return res.redirect("/");
     }
     return next();

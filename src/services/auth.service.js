@@ -2,7 +2,7 @@ const tokenService = require("./token.service");
 const config = require("../config/config");
 const constant = require("../config/constant");
 const userService = require("./users.service");
-const ApiError = require("../utils/APIError");
+const ApiError = require("../utils/apiError");
 const emailService = require("./email.service");
 const jwt = require("jsonwebtoken");
 
