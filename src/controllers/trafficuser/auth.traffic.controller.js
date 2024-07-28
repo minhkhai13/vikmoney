@@ -4,7 +4,7 @@ const authService = require("../../services/trafficuser/auth.traffic.service");
 const config = require("../../config/config");
 const tokenService = require("../../services/trafficuser/token.traffic.service");
 const emailService = require("../../services/trafficuser/email.traffic.service");
-const login = async (req, res) => {
+const login = async (req, res,next) => {
   if (req.isAuthenticated()) {
     return res.redirect("http://localhost:3000/");
   }
@@ -21,7 +21,7 @@ const login = async (req, res) => {
       }
       return res.status(200).json(user);
     });
-  })(req, res);
+  })(req, res,next);
 };
 
 const logout = async (req, res) => {

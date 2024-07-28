@@ -1,22 +1,27 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const authRouter  = require('./auth.route');
-const userRoter = require('./user.route');
+const authRouter = require("./auth.route");
+const userRouter = require("./user.route"); // Sửa lỗi chính tả từ 'userRoter' thành 'userRouter'
+const domainRouter = require("./domain.route");
 
 const defaultRouter = [
-    {
-        path: '/auth',
-        router: authRouter 
-    },
-    {
-        path: '/user',
-        router: userRoter
-    }
-]
+  {
+    path: "/auth",
+    router: authRouter,
+  },
+  {
+    path: "/user",
+    router: userRouter, // Sửa lỗi chính tả từ 'userRoter' thành 'userRouter'
+  },
+  {
+    path: "/domain",
+    router: domainRouter,
+  },
+];
 
 defaultRouter.forEach((route) => {
-    router.use(route.path, route.router);
+  router.use(route.path, route.router);
 });
 
 module.exports = router;

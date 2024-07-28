@@ -91,6 +91,14 @@ const errorCode429 = (message, data) => {
   return { errorcode: 429, message: message, data: data };
 };
 
+//domain
+const errorCode600 = (message, data = null) => {
+  return { errorcode: 600, message: message, data: data };
+};
+const errorCode601 = () => {
+  return { errorcode: 601, message: "Domain is exist", data: null };
+}
+
 module.exports = {
   errorCode10,
   errorCode100,
@@ -113,4 +121,6 @@ module.exports = {
   errorCode413,
   errorCode415,
   errorCode429,
+  errorCode600,
+  errorCode601
 };

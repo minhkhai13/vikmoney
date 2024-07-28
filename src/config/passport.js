@@ -5,7 +5,7 @@ const authServiceVikmoney = require("../services/vikmoney/auth.vikmoney.service"
 
 
 const configPassport = () => {
-  passport.use('login-traffic-user',
+  passport.use('login-trafficuser',
     new LocalStrategy( async function verify(username, password, cb) {
       const result = await authServiceTraffic.loginUserWithEmailAndPassword(
         username,
