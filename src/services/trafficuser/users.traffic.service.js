@@ -96,6 +96,7 @@ const createUserWithMailPassword = async (name, email, password) => {
       role: "user",
       active: true,
       mail_active: false,
+      type_account: config.login.type.email,
     };
     let checkUser = await db.User.findOne({
       where: {

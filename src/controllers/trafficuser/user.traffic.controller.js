@@ -5,7 +5,7 @@ const config = require("../../config/config");
 const tokenService = require("../../services/trafficuser/token.traffic.service");
 const emailService = require("../../services/trafficuser/email.traffic.service");
 
-const updateInfor = async (req, res) => {
+const updateInforLoginEmail = async (req, res) => {
   const userInfo = req.body.user;
   const result = await userService.updateInfor(userInfo);
   res.status(200).json(result);
@@ -18,6 +18,6 @@ const getInfor = async (req, res) => {
 };
 
 module.exports = {
-  updateInfor,
+  updateInforLoginEmail,
   getInfor,
 };

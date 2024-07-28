@@ -9,9 +9,9 @@ const router = express.Router();
 
 router.get("/get-infor", verifyToken.verifyToken, userController.getInfor);
 router.post(
-  "/update-infor",
+  "/update-infor-login-email",
   verifyToken.verifyToken,
-  userController.updateInfor
+  userController.updateInforLoginEmail
 );
 
 module.exports = router;

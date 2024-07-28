@@ -28,6 +28,7 @@ module.exports = {
       email: "email",
       facebook: "facebook",
       google: "google",
+      phoneNumber: "phoneNumber",
     },
   },
   hashRound: 10,

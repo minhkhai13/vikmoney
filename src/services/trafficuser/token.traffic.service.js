@@ -25,6 +25,7 @@ const generateToken = (
       location: user.location,
       money: user.money,
       infor_detail: user.infor_detail,
+      type_account: user.type_account,
     },
     userId: user.id,
     iat: moment().unix(),

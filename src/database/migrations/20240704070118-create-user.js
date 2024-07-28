@@ -80,6 +80,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      type_account: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       googleId: {
         type: Sequelize.STRING,
         allowNull: true,

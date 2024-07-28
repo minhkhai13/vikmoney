@@ -1,6 +1,6 @@
 const config = require("../config/config");
 const jwt = require("jsonwebtoken");
-const userService = require("../services/trafficuser/users.traffic.service");
+const userService = require("../services/vikmoney/users.vikmoney.service");
 const ApiError = require("../utils/apiError");
 
 const verifyToken = async (req, res, next) => {
@@ -10,7 +10,8 @@ const verifyToken = async (req, res, next) => {
     return res.status(401).send(ApiError.errorCode401());
   }
   try {
-    const userInfo = jwt.verify(token, config.jwt.secretTrafic);
+    const userInfo = jwt.verify(token, config.jwt.secretVikmoney);
+    console.log(userInfo, "userInfo");
     if (userInfo && userInfo.sub?.user_id) {
       const dataUser = await userService.getUserById(userInfo.sub?.user_id);
       if (!dataUser) {
@@ -40,14 +41,14 @@ const verifyTokenSendMail = async (req, res, next) => {
     return res.status(401).send(ApiError.errorCode401());
   }
   try {
-    const userInfo = jwt.verify(tokenLogin, config.jwt.secretTrafic);
+    const userInfo = jwt.verify(tokenLogin, config.jwt.secretVikmoney);
     console.log(userInfo, "userInfo");
     if (userInfo && userInfo.sub?.user_id) {
       const dataUser = await userService.getUserById(userInfo.sub?.user_id);
       if (!dataUser) {
         return res.status(200).send(ApiError.errorCode101());
       }
-      if (!dataUser.active) {
+      if (!dataUser.status) {
         return res.status(200).send(ApiError.errorCode102());
       }
       req.user = userInfo.sub;

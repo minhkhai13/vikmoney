@@ -75,7 +75,7 @@ const getUserById = async (id) => {
     return await db.UserVikmoney.findOne({
       where: { id: id },
       raw: true,
-      attributes: ["id", "user_name", "role", "active", "mail_active"],
+      attributes: ["id", "user_name", "role", "active", "status"],
     });
   } catch (error) {
     ApiError.errorCode310(error);
@@ -94,8 +94,8 @@ const createUserWithMailPassword = async (name, email, password) => {
       user_name: cleanEmail,
       password: hashPassword,
       role: "user",
-      active: true,
-      mail_active: false,
+      active: false,
+      status: true,
     };
     let checkUser = await db.UserVikmoney.findOne({
       where: {
@@ -118,7 +118,7 @@ const createUserWithMailPassword = async (name, email, password) => {
 const isActiveMail = async (id) => {
   try {
     return await db.UserVikmoney.update(
-      { mail_active: true },
+      { active: true },
       {
         where: { id: id },
       }
