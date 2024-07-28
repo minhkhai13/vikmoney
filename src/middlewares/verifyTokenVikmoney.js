@@ -17,10 +17,10 @@ const verifyToken = async (req, res, next) => {
       if (!dataUser) {
         return res.status(101).send(ApiError.errorCode101());
       }
-      if (!dataUser.active) {
+      if (!dataUser.status) {
         return res.status(102).send(ApiError.errorCode102());
       }
-      if (!dataUser.mail_active) {
+      if (!dataUser.active) {
         return res.status(100).send(ApiError.errorCode100());
       }
       req.user = userInfo.sub;

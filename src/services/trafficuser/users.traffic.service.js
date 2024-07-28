@@ -12,7 +12,7 @@ const cleanText = (text) => {
 };
 
 const getAllUsers = async () => {
-  return db.User.findAll();
+  return db.UserTraffic.findAll();
 };
 
 const createUserMail = async (name, email, phone_number) => {
@@ -22,11 +22,11 @@ const createUserMail = async (name, email, phone_number) => {
       user_name: email,
       email: email,
       role: "user",
-      active: true,
-      mail_active: false,
+      status: true,
+      active: false,
       phone_number: phone_number || null,
     };
-    let checkUser = await db.User.findOne({
+    let checkUser = await db.UserTraffic.findOne({
       where: { user_name: email },
       raw: true,
       attributes: ["id"],
@@ -34,7 +34,7 @@ const createUserMail = async (name, email, phone_number) => {
     if (checkUser) {
       return ApiError.errorCode310("Email is exist");
     }
-    const result = await db.User.create(user);
+    const result = await db.UserTraffic.create(user);
     if (result) {
       return ApiError.errorCode200("Create user success", result);
     }
@@ -47,7 +47,7 @@ const createUserMail = async (name, email, phone_number) => {
 
 const getUserByEmail = async (email) => {
   console.log(email);
-  return await db.User.findOne({
+  return await db.UserTraffic.findOne({
     where: { email: email },
     raw: true,
     attributes: [
@@ -58,7 +58,7 @@ const getUserByEmail = async (email) => {
       "role",
       "password",
       "active",
-      "mail_active",
+      "status",
       "avatar",
       "birthday",
       "sex",
@@ -72,10 +72,10 @@ const getUserByEmail = async (email) => {
 
 const getUserById = async (id) => {
   try {
-    return await db.User.findOne({
+    return await db.UserTraffic.findOne({
       where: { id: id },
       raw: true,
-      attributes: ["id", "user_name", "role", "active", "mail_active"],
+      attributes: ["id", "user_name", "role", "active", "status"],
     });
   } catch (error) {
     ApiError.errorCode310(error);
@@ -94,11 +94,11 @@ const createUserWithMailPassword = async (name, email, password) => {
       user_name: cleanEmail,
       password: hashPassword,
       role: "user",
-      active: true,
-      mail_active: false,
+      status: true,
+      active: false,
       type_account: config.login.type.email,
     };
-    let checkUser = await db.User.findOne({
+    let checkUser = await db.UserTraffic.findOne({
       where: {
         [Op.or]: [{ email: cleanEmail }, { user_name: cleanEmail }],
       },
@@ -109,7 +109,7 @@ const createUserWithMailPassword = async (name, email, password) => {
     if (checkUser) {
       return ApiError.errorCode205();
     }
-    const result = await db.User.create(user);
+    const result = await db.UserTraffic.create(user);
     if (!result) {
       return ApiError.errorCode310("Create user error");
     }
@@ -122,8 +122,8 @@ const createUserWithMailPassword = async (name, email, password) => {
 
 const isActiveMail = async (id) => {
   try {
-    return await db.User.update(
-      { mail_active: true },
+    return await db.UserTraffic.update(
+      { active: true },
       {
         where: { id: id },
       }
@@ -136,7 +136,7 @@ const isActiveMail = async (id) => {
 const updatePassword = async (id, userName, password) => {
   try {
     const hashPassword = await bcrypt.hashSync(password, config.hashRound);
-    await db.User.update(
+    await db.UserTraffic.update(
       { password: hashPassword, updatedAt: new Date() },
       {
         where: { id: id, user_name: userName },
@@ -147,21 +147,22 @@ const updatePassword = async (id, userName, password) => {
     return ApiError.errorCode310(error);
   }
 };
-const updateInfor = async (userInfo) => {
+const updateInforLoginEmail = async (userInfo, id, userName) => {
   try {
-    const result = await db.User.update(
+    console.log(userInfo);
+    console.log(id, userName);
+    const result = await db.UserTraffic.update(
       {
-        full_name: userInfo.full_name,
-        user_name: userInfo.user_name,
-        email: userInfo.email,
-        role: userInfo.role,
-        active: userInfo.active,
-        mail_active: userInfo.mail_active,
+        full_name: userInfo.fullName,
         avatar: userInfo.avatar,
-        birthday: userInfo.b,
+        birthday: userInfo.birthday,
+        location: userInfo.location,
+        phone_number: userInfo.phoneNumber,
+        infor_detail: userInfo.inforDetail,
+        sex: userInfo.sex,
       },
       {
-        where: { id: userInfo.id, user_name: userInfo.user_name },
+        where: { id: id, user_name: userName },
       }
     );
     if (result) {
@@ -169,6 +170,7 @@ const updateInfor = async (userInfo) => {
     }
     return ApiError.errorCode310("Update infor error");
   } catch (error) {
+    console.log(error);
     return ApiError.errorCode310(error);
   }
 };
@@ -176,9 +178,9 @@ const updateInfor = async (userInfo) => {
 const getInfor = async (userInfo) => {
   try {
     if (!userInfo.user_id || !userInfo.user_name) {
-      return ApiError.errorCode310("User not found");
+      return ApiError.errorCode310("UserTraffic not found");
     }
-    const infoData = await db.User.findOne({
+    const infoData = await db.UserTraffic.findOne({
       where: { id: userInfo.user_id, user_name: userInfo.user_name },
       raw: true,
       attributes: [
@@ -195,13 +197,59 @@ const getInfor = async (userInfo) => {
       ],
     });
     if (!infoData) {
-      return ApiError.errorCode310("User not found");
+      return ApiError.errorCode310("UserTraffic not found");
     }
     return ApiError.errorCode200("Get infor success", infoData);
   } catch (error) {
     return ApiError.errorCode310(error);
   }
 };
+
+const getAllUser = async (page, limit) => {
+  try {
+    const offet = (page - 1) * limit;
+    const result = await db.UserTraffic.findAndCountAll({
+      offset: offet,
+      limit: limit,
+      raw: true,
+      attributes: [
+        "id",
+        "full_name",
+        "email",
+        "avatar",
+        "birthday",
+        "location",
+        "phone_number",
+        "infor_detail",
+        "money",
+      ],
+    });
+    if (!result) {
+      return ApiError.errorCode310("Get all user error");
+    }
+    return ApiError.errorCode200("Get all user success", result);
+  } catch (error) {
+    return ApiError.errorCode310(error);
+  }
+};
+
+const blockUser = async (user_id) => {
+  try {
+    const result = await db.UserTraffic.update(
+      { status: false },
+      {
+        where: { id: user_id },
+      }
+    );
+    if (!result) {
+      return ApiError.errorCode310("Block user error");
+    }
+    return ApiError.errorCode200("Block user success");
+  } catch (error) {
+    return ApiError.errorCode310(error);
+  }
+};
+
 module.exports = {
   getAllUsers,
   createUserMail,
@@ -210,6 +258,8 @@ module.exports = {
   isActiveMail,
   getUserById,
   updatePassword,
-  updateInfor,
+  updateInforLoginEmail,
   getInfor,
+  getAllUser,
+  blockUser,
 };

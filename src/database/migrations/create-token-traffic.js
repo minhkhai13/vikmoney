@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("Tokens", {
+    await queryInterface.createTable("TokenTraffics", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -10,7 +10,7 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       token: {
-        type: Sequelize.STRING(500),
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       type: {
@@ -46,6 +46,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("Tokens");
+    await queryInterface.dropTable("TokenTraffics");
   },
 };

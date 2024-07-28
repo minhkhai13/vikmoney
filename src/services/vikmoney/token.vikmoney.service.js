@@ -16,7 +16,7 @@ const generateToken = (
       full_name: user.full_name,
       user_name: user.user_name,
       user_id: user.id,
-      mail_active: user.mail_active,
+      active: user.active,
       role: user.role,
       avatar: user.avatar,
       birthday: user.birthday,

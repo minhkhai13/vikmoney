@@ -64,7 +64,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
     }
     return ApiError.errorCode200("Login success", {
       token,
-      mailActive: user.mail_active,
+      status: user.status,
       active: user.active,
     });
   } catch (error) {
@@ -105,7 +105,7 @@ const verifyEmail = async (verifyEmailToken) => {
       throw ApiError.errorCode310("Delete token error");
     }
     let dataToken = verifyEmailTokenDoc.payload?.sub;
-    dataToken.mail_active = true;
+    dataToken.active = true;
     dataToken.id = dataToken.user_id;
     const token = await tokenService.generateAuthTokens(dataToken);
     return ApiError.errorCode200("Active success", { token: token });
@@ -140,7 +140,7 @@ const resetPassword = async (token, password) => {
   try {
     const dataUser = await jwt.verify(
       token,
-      config.jwt.forgotPasswordSecretTrafic
+      config.jwt.forgotPasswordSecretVikmoney
     );
     console.log(dataUser, "dataUser");
     if (!dataUser) {

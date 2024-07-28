@@ -6,8 +6,15 @@ const tokenService = require("../../services/trafficuser/token.traffic.service")
 const emailService = require("../../services/trafficuser/email.traffic.service");
 
 const updateInforLoginEmail = async (req, res) => {
-  const userInfo = req.body.user;
-  const result = await userService.updateInfor(userInfo);
+  const userInfo = req.body;
+  const userData = req.user;
+  console.log(userData);
+
+  const result = await userService.updateInforLoginEmail(
+    userInfo,
+    userData.user_id,
+    userData.user_name
+  );
   res.status(200).json(result);
 };
 const getInfor = async (req, res) => {
@@ -17,7 +24,21 @@ const getInfor = async (req, res) => {
   res.status(200).json(result);
 };
 
+const getAllUser = async (req, res) => {
+  const {page,limit} = req.body;
+  const result = await userService.getAllUser(page,limit);
+  res.status(200).json(result);
+};
+
+const blockUser = async (req, res) => {
+  const {user_id} = req.body;
+  const result = await userService.blockUser(user_id);
+  res.status(200).json(result);
+};
+
 module.exports = {
   updateInforLoginEmail,
   getInfor,
+  getAllUser,
+  blockUser,
 };

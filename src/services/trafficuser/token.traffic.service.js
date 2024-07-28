@@ -16,7 +16,7 @@ const generateToken = (
       full_name: user.full_name,
       user_name: user.user_name,
       user_id: user.id,
-      mail_active: user.mail_active,
+      active: user.active,
       role: user.role,
       avatar: user.avatar,
       birthday: user.birthday,
@@ -67,7 +67,7 @@ const generateAuthTokensVerifyEmail = async (user) => {
     user.roles
   );
   // await saveToken
-  const saveToken = await db.Token.create({
+  const saveToken = await db.TokenTraffic.create({
     token: tokenVerifyMail,
     user_id: user.user_id,
     // expires: moment().add(config.jwt.verifyEmailExpirationMinutes, "minutes"),
@@ -89,7 +89,7 @@ const generateAuthTokensForgotPassword = async (user) => {
       config.jwt.forgotPasswordSecretTrafic
     );
     // await saveToken
-    const saveToken = await db.Token.create({
+    const saveToken = await db.TokenTraffic.create({
       token: tokenForgotPassword,
       user_id: user.id,
       expires: moment()
@@ -113,7 +113,7 @@ const getTokensVerifyMail = async (token, userId, type = "verifyEmail") => {
     console.log(userId, "userId");
     console.log(token, "token");
     console.log(type, "type");
-    return await db.Token.findOne({
+    return await db.TokenTraffic.findOne({
       where: { user_id: userId, token: token, type: type },
       attributes: ["id", "user_id", "token", "type"],
       raw: true,
@@ -125,7 +125,7 @@ const getTokensVerifyMail = async (token, userId, type = "verifyEmail") => {
 
 const deleteTokenVerifyMail = async (userId, token, type = "verifyEmail") => {
   try {
-    return await db.Token.destroy({
+    return await db.TokenTraffic.destroy({
       where: { user_id: userId, token: token, type: type },
     });
   } catch (error) {
