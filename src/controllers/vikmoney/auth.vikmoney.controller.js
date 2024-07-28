@@ -8,7 +8,7 @@ const login = async (req, res) => {
   if (req.isAuthenticated()) {
     return res.redirect("http://localhost:3000/");
   }
-  passport.authenticate("local", (err, user, info) => {
+  passport.authenticate("login-vikmoney", (err, user, info) => {
     if (err) {
       return next(err);
     }

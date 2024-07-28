@@ -10,6 +10,14 @@ const password = (value, helpers) => {
   return value;
 };
 
+const role = (value, helpers) => {
+  if (value !== "admin" && value !== "user" && value !== "buyer") {
+    return helpers.message("role must be either 'admin' or 'user' or 'buyer'");
+  }
+  return value;
+};
+
 module.exports = {
   password,
+  role,
 };

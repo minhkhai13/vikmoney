@@ -1,9 +1,9 @@
 const passport = require("passport");
 const catchAsync = require("../../utils/catchAsync");
-const userService = require("../../services/trafficuser/users.traffic.service");
+const userService = require("../../services/vikmoney/users.vikmoney.service");
 const config = require("../../config/config");
-const tokenService = require("../../services/trafficuser/token.traffic.service");
-const emailService = require("../../services/trafficuser/email.traffic.service");
+const tokenService = require("../../services/vikmoney/token.vikmoney.service");
+const emailService = require("../../services/vikmoney/email.vikmoney.service");
 
 const updateInforLoginEmail = async (req, res) => {
   const userInfo = req.body;
@@ -38,6 +38,7 @@ const blockUser = async (req, res) => {
 
 const updateRoleUsers = async (req, res) => {
   const { userIds, role } = req.body;
+  console.log(userIds);
   const result = await userService.updateRoleUsers(userIds, role);
   res.status(200).json(result);
 };

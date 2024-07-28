@@ -3,6 +3,7 @@ const bcrypt = require("bcryptjs");
 const { Op } = require("sequelize");
 const ApiError = require("../../utils/apiError");
 const config = require("../../config/config");
+const e = require("express");
 
 const cleanText = (text) => {
   let value = text || "";
@@ -147,6 +148,7 @@ const updatePassword = async (id, userName, password) => {
     return ApiError.errorCode310(error);
   }
 };
+
 const updateInforLoginEmail = async (userInfo, id, userName) => {
   try {
     console.log(userInfo);
@@ -233,12 +235,12 @@ const getAllUser = async (page, limit) => {
   }
 };
 
-const blockUser = async (user_id) => {
+const blockUser = async (arrayId) => {
   try {
     const result = await db.UserTraffic.update(
       { status: false },
       {
-        where: { id: user_id },
+        where: { id: arrayId, role: { [db.Sequelize.Op.ne]: "root" } },
       }
     );
     if (!result) {
@@ -246,6 +248,26 @@ const blockUser = async (user_id) => {
     }
     return ApiError.errorCode200("Block user success");
   } catch (error) {
+    return ApiError.errorCode310(error);
+  }
+};
+
+const updateRoleUsers = async (arrayId, role) => {
+  try {
+    const result = await db.UserTraffic.update(
+      { role: role },
+      {
+        where: { id: arrayId, role: { [db.Sequelize.Op.ne]: "root" } },
+      }
+    );
+    if (!result) {
+      return ApiError.errorCode310("Update role user error");
+    }
+    return ApiError.errorCode200("Update role user success");
+  } catch (error) {
+    if (error.errorcode) {
+      return error;
+    }
     return ApiError.errorCode310(error);
   }
 };
@@ -262,4 +284,5 @@ module.exports = {
   getInfor,
   getAllUser,
   blockUser,
+  updateRoleUsers,
 };

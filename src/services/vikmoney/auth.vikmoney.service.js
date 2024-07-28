@@ -51,6 +51,7 @@ const registerWithMail = async (name, email, password) => {
 const loginUserWithEmailAndPassword = async (email, password) => {
   try {
     const user = await userService.getUserByEmail(email);
+    console.log(user, "ussssssssssssssssssssssser");
     if (!user) {
       return ApiError.errorCode100();
     }

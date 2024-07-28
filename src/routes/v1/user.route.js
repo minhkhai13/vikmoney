@@ -1,8 +1,8 @@
 const express = require("express");
 const validate = require("../../middlewares/validate");
-const userValidation = require("../../validate/trafficuser/user.validate");
-const userController = require("../../controllers/trafficuser/user.traffic.controller");
-const verifyToken = require("../../middlewares/verifyTokenTraffic");
+const userValidation = require("../../validate/vikmoney/user.validate");
+const userController = require("../../controllers/vikmoney/user.vikmoney.controller");
+const verifyToken = require("../../middlewares/verifyTokenVikmoney");
 const verifyRole = require("../../middlewares/verifyRole");
 const passport = require("passport");
 
