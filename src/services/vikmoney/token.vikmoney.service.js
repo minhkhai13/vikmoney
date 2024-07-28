@@ -10,7 +10,6 @@ const generateToken = (
   roles = [],
   secret = config.jwt.secretTrafic
 ) => {
-  user.id = !user.id ? user.user_id : user.id;
   const payload = {
     sub: {
       email: user.email,
@@ -40,7 +39,7 @@ const generateAuthTokens = async (user) => {
     config.jwt.accessExpirationMinutes,
     "minutes"
   );
-  console.log(user, "user");
+  // console.log(user, "user");
   const accessToken = generateToken(user, accessTokenExpires, roles);
 
   const refreshTokenExpires = moment().add(

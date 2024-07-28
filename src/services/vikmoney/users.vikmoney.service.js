@@ -104,7 +104,6 @@ const createUserWithMailPassword = async (name, email, password) => {
       raw: true,
       attributes: ["id"],
     });
-    console.log("checkUser, ", checkUser);
     if (checkUser) {
       return ApiError.errorCode205();
     }

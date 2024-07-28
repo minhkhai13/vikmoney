@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("UserVikmoney", {
+    await queryInterface.createTable("UserVikmoneys", {
         id: {
             allowNull: false,
             autoIncrement: true,
@@ -90,7 +90,7 @@ module.exports = {
         });
     },
     async down(queryInterface, Sequelize) {
-        await queryInterface.dropTable("UserVikmoney");
+        await queryInterface.dropTable("UserVikmoneys");
     },
 };
 // Compare this snippet from src/database/migrations/create-user-vikmoney.js:

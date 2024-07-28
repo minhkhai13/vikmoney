@@ -10,7 +10,7 @@ const defaultRouter = [
   },
   {
     path: "/v1",
-    router: v0Router,
+    router: v1Router,
   },
 ];
 
