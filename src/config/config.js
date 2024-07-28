@@ -13,13 +13,22 @@ module.exports = {
     enableSqlLogging: process.env.ENABLE_SQL_LOGGING,
   },
   jwt: {
-    secret: "envVars.JWT_SECRET",
-    forgotPasswordSecret: "process.env.JWT_FORGOT_PASSWORD_SECRET",
+    secretTrafic: process.env.JWT_SECRET_TRAFIC,
+    secretVikmoney: process.env.JWT_SECRET_VIKMONEY,
+    forgotPasswordSecretTrafic: process.env.JWT_FORGOT_PASSWORD_SECRET_TRAFIC,
+    forgotPasswordSecretVikmoney: process.env.JWT_FORGOT_PASSWORD_SECRET_VIKMONEY,
     accessExpirationMinutes: 300,
     refreshExpirationDays: 7,
     resetPasswordExpirationMinutes: 30,
     forgotPasswordExpirationMinutes: 30,
     verifyEmailExpirationMinutes: 300,
+  },
+  login:{
+    type: {
+      email: "email",
+      facebook: "facebook",
+      google: "google",
+    },
   },
   hashRound: 10,
   oauth2: {
@@ -28,7 +37,7 @@ module.exports = {
     googleAppId: process.env.GOOGLE_CLIENT_ID,
     googleAppSecret: process.env.GOOGLE_CLIENT_SECRET,
   },
-  tokenType:{
+  tokenType: {
     access: "access",
     refresh: "refresh",
     verifyEmail: "verifyEmail",

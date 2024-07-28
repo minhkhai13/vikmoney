@@ -1,18 +1,13 @@
 const express = require('express');
 const router = express.Router();
 
-const authRouter  = require('./auth.route');
-const userRoter = require('./user.route');
+const authRoter = require('./auth.route');
 
 const defaultRouter = [
     {
         path: '/auth',
-        router: authRouter 
-    },
-    {
-        path: '/user',
-        router: userRoter
-    }
+        router: authRoter
+    }   
 ]
 
 defaultRouter.forEach((route) => {

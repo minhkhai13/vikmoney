@@ -1,9 +1,9 @@
 const passport = require("passport");
-const catchAsync = require("../utils/catchAsync");
-const authService = require("../services/auth.service");
-const config = require("../config/config");
-const tokenService = require("../services/token.service");
-const emailService = require("../services/email.service");
+const catchAsync = require("../../utils/catchAsync");
+const authService = require("../../services/vikmoney/auth.vikmoney.service");
+const config = require("../../config/config");
+const tokenService = require("../../services/vikmoney/token.vikmoney.service");
+const emailService = require("../../services/vikmoney/email.vikmoney.service");
 const login = async (req, res) => {
   if (req.isAuthenticated()) {
     return res.redirect("http://localhost:3000/");
@@ -32,9 +32,13 @@ const logout = async (req, res) => {
 const updatePassword = async (req, res) => {
   const { oldPassword, newPassword } = req.body;
   const userInfo = req.user;
-  const result = await authService.updatePassword(oldPassword, newPassword, userInfo);
+  const result = await authService.updatePassword(
+    oldPassword,
+    newPassword,
+    userInfo
+  );
   res.status(200).send(result);
-}
+};
 const active = async (req, res) => {
   res.send("active");
 };
@@ -76,7 +80,7 @@ const sendVerificationEmail = async (req, res) => {
 };
 
 const googleAuthenticationCallBack = catchAsync(async (req, res) => {
-  const result = await emailService.googleAuthenticationCallBack(
+  const result = await authService.googleAuthenticationCallBack(
     req.user,
     req.query.redirectUrl
   );
@@ -91,10 +95,10 @@ const facebookAuthenticationCallBack = async (req, res) => {
   res.send("facebookAuthenticationCallBack");
 };
 
-const register = async (req, res) => {
+const registerWithMail = async (req, res) => {
   const { username, password, fullName } = req.body;
   console.log(username, password, fullName);
-  const user = await authService.register(fullName, username, password);
+  const user = await authService.registerWithMail(fullName, username, password);
   res.send(user);
 };
 
@@ -110,6 +114,6 @@ module.exports = {
   googleAuthenticationCallBack,
   facebookAuthentication,
   facebookAuthenticationCallBack,
-  register,
+  registerWithMail,
   updatePassword,
 };

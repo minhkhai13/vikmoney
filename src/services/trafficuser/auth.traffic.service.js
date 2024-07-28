@@ -1,9 +1,8 @@
-const tokenService = require("./token.service");
-const config = require("../config/config");
-const constant = require("../config/constant");
-const userService = require("./users.service");
-const ApiError = require("../utils/apiError");
-const emailService = require("./email.service");
+const tokenService = require("./token.traffic.service");
+const config = require("../../config/config");
+const userService = require("./users.traffic.service");
+const ApiError = require("../../utils/apiError");
+const emailService = require("./email.traffic.service");
 const jwt = require("jsonwebtoken");
 
 const bcrypt = require("bcryptjs");
@@ -28,7 +27,7 @@ const googleAuthenticationCallBack = async (user, redirectUrl = null) => {
   return `http://${config.host}/login?status=error&redirectTo=/login&type=google`;
 };
 
-const register = async (name, email, password) => {
+const registerWithMail = async (name, email, password) => {
   try {
     console.log(email, password, name);
     const user = await userService.createUserWithMailPassword(
@@ -41,7 +40,6 @@ const register = async (name, email, password) => {
     }
     const userInfo = user.data;
     const token = await tokenService.generateAuthTokens(userInfo);
-    console.log("token", token);
     return ApiError.errorCode200("Register succsess", { token: token });
   } catch (error) {
     console.log(error);
@@ -111,7 +109,7 @@ const verifyEmail = async (verifyEmailToken) => {
     return ApiError.errorCode200("Active success", { token: token });
   } catch (error) {
     console.log(error);
-    return (error);
+    return error;
   }
 };
 
@@ -138,7 +136,10 @@ const forgotPasswordMail = async (email) => {
 
 const resetPassword = async (token, password) => {
   try {
-    const dataUser = await jwt.verify(token, config.jwt.forgotPasswordSecret);
+    const dataUser = await jwt.verify(
+      token,
+      config.jwt.forgotPasswordSecretTrafic
+    );
     console.log(dataUser, "dataUser");
     if (!dataUser) {
       return ApiError.errorCode204();
@@ -210,7 +211,7 @@ const updatePassword = async (oldPassword, newPassword, userInfo) => {
 };
 
 exports.googleAuthenticationCallBack = googleAuthenticationCallBack;
-exports.register = register;
+exports.registerWithMail = registerWithMail;
 exports.loginUserWithEmailAndPassword = loginUserWithEmailAndPassword;
 exports.verifyEmail = verifyEmail;
 exports.forgotPasswordMail = forgotPasswordMail;

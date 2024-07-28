@@ -1,6 +1,6 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const authService = require("../services/auth.service");
+const authService = require("../services/trafficuser/auth.traffic.service");
 
 const configPassport = () => {
   passport.use(
@@ -14,7 +14,7 @@ const configPassport = () => {
   );
 
   passport.serializeUser((user, done) => {
-   return done(null, user);
+    return done(null, user);
   });
   passport.deserializeUser((id, done) => {
     return done(null, id);

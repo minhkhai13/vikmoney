@@ -1,14 +1,14 @@
 const moment = require("moment");
-const config = require("../config/config");
+const config = require("../../config/config");
 const jwt = require("jsonwebtoken");
-const db = require("../database/models/index");
-const ApiError = require("../utils/apiError");
+const db = require("../../database/models/index");
+const ApiError = require("../../utils/apiError");
 
 const generateToken = (
   user,
   expires,
   roles = [],
-  secret = config.jwt.secret
+  secret = config.jwt.secretTrafic
 ) => {
   const payload = {
     sub: {
@@ -85,7 +85,7 @@ const generateAuthTokensForgotPassword = async (user) => {
       user,
       moment().add(config.jwt.forgotPasswordExpirationMinutes, "minutes"),
       user.roles,
-      config.jwt.forgotPasswordSecret
+      config.jwt.forgotPasswordSecretTrafic
     );
     // await saveToken
     const saveToken = await db.Token.create({
@@ -134,7 +134,7 @@ const deleteTokenVerifyMail = async (userId, token, type = "verifyEmail") => {
 const verifyToken = async (token, type) => {
   let payload;
   try {
-    payload = jwt.verify(token, config.jwt.secret);
+    payload = jwt.verify(token, config.jwt.secretTrafic);
   } catch (e) {
     return ApiError.errorCode203();
   }
@@ -144,7 +144,7 @@ const verifyToken = async (token, type) => {
   if (!tokenDoc || !tokenDoc.user_id) {
     throw ApiError.errorCode201();
   }
-  return { errorcode: 200, tokenDoc: tokenDoc ,payload:payload};
+  return { errorcode: 200, tokenDoc: tokenDoc, payload: payload };
 };
 
 exports.generateAuthTokens = generateAuthTokens;

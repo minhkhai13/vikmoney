@@ -1,5 +1,5 @@
 const dotenv = require("dotenv");
-const userServices = require("../services/users.service");
+const userServices = require("../services/trafficuser/users.traffic.service");
 dotenv.config();
 
 const passport = require("passport");
@@ -12,9 +12,9 @@ const configLoginWithGoogle = () => {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: process.env.GOOGLE_REDIRECT_URL,
       },
-    async  function (accessToken, refreshToken, profile, cb) {
+      async function (accessToken, refreshToken, profile, cb) {
         let user = await userServices.getUserByEmail(profile.emails[0].value);
-        
+
         if (user) {
           return cb(null, user);
         } else {

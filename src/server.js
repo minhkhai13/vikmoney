@@ -17,36 +17,35 @@ const configSession = require("./config/session");
 const app = express();
 // connectDB();
 
-
 // Middleware
-
-app.use(bodyParser.json());
-app.use(express.urlencoded({ extended: true }));
-
-
-app.use(cookieParser());
-configSession(app);
 const corsOptions = {
   origin: process.env.HOST_FE, // Chỉ cho phép yêu cầu từ localhost:8000
-  optionsSuccessStatus: 200 // Một số trình duyệt cũ sẽ cần tùy chọn này để hoạt động
+  credentials: true,
 };
 app.use(cors(corsOptions));
 app.use(configCors);
+
 app.use(morgan("dev"));
+
+app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+configSession(app);
+app.use(cookieParser());
 
 app.use(passport.initialize());
 app.use(passport.session());
 // parse urlencoded request body
 
 app.use("/api", routes);
-app.use("/login",function(req,res){
+app.use("/login", function (req, res) {
   res.send("login");
 });
 
 // Routes
 passportConfig();
-
 configLoginWithGoogle();
+
+
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "https://192.168.1.219";
 app.listen(PORT, HOST, () => {

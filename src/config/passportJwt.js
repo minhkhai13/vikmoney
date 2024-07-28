@@ -1,10 +1,10 @@
-const passportJwt = require('passport');
-const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
-const config = require('./config');
-const userService = require('../services/users.service');
+const passportJwt = require("passport");
+const { Strategy: JwtStrategy, ExtractJwt } = require("passport-jwt");
+const config = require("./config");
+const userService = require("../services/users.service");
 
 const jwtOptions = {
-  secretOrKey: config.jwt.secret,
+  secretOrKey: config.jwt.secretTrafic,
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 };
 

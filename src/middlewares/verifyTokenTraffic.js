@@ -1,16 +1,22 @@
 const config = require("../config/config");
 const jwt = require("jsonwebtoken");
-const userService = require("../services/users.service");
+const userService = require("../services/trafficuser/users.traffic.service");
 const ApiError = require("../utils/apiError");
 
 const verifyToken = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
+  //check start with Bearer?
+
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    return res.status(401).send(ApiError.errorCode401());
+  }
+
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) {
     return res.status(401).send(ApiError.errorCode401());
   }
   try {
-    const userInfo = jwt.verify(token, config.jwt.secret);
+    const userInfo = jwt.verify(token, config.jwt.secretTrafic);
     if (userInfo && userInfo.sub?.user_id) {
       const dataUser = await userService.getUserById(userInfo.sub?.user_id);
       if (!dataUser) {
@@ -40,7 +46,7 @@ const verifyTokenSendMail = async (req, res, next) => {
     return res.status(401).send(ApiError.errorCode401());
   }
   try {
-    const userInfo = jwt.verify(tokenLogin, config.jwt.secret);
+    const userInfo = jwt.verify(tokenLogin, config.jwt.secretTrafic);
     console.log(userInfo, "userInfo");
     if (userInfo && userInfo.sub?.user_id) {
       const dataUser = await userService.getUserById(userInfo.sub?.user_id);
