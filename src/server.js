@@ -22,7 +22,7 @@ const corsOptions = {
   origin: process.env.HOST_FE, // Chỉ cho phép yêu cầu từ localhost:8000
   credentials: true,
 };
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 app.use(configCors);
 
 app.use(morgan("dev"));
