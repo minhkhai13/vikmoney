@@ -18,6 +18,7 @@ router.post(
   domainController.getAllDomain
 );
 
-router.post("/verify-domain", domainController.verifyDomain);
+router.post("/verify-domain",verifyToken.verifyToken, domainController.verifyDomain);
 
 module.exports = router;
+

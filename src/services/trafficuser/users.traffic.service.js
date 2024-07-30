@@ -216,9 +216,9 @@ const getAllUser = async (page, limit) => {
       raw: true,
       attributes: [
         "id",
+        "user_name",
         "full_name",
         "email",
-        "avatar",
         "birthday",
         "location",
         "phone_number",

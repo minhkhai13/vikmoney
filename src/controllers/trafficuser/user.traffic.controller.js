@@ -25,7 +25,7 @@ const getInfor = async (req, res) => {
 };
 
 const getAllUser = async (req, res) => {
-  const { page, limit } = req.body;
+  const { page, limit } = req.query;
   const result = await userService.getAllUser(page, limit);
   res.status(200).json(result);
 };

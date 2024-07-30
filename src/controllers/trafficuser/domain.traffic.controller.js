@@ -20,13 +20,15 @@ const getAllDomain = async (req, res) => {
     const userID = req.user.user_id;
     const result = await domainService.getAllDomain(userID);
     res.send(result);
-    }
-    catch (error) {}
-}
+  } catch (error) {}
+};
 
 const verifyDomain = async (req, res) => {
   try {
     const domainInfo = req.body.domain;
+    if(!req.user || !req.user.user_id) {
+      return res.send(ApiError.errorCode401());
+    }
     const userID = req.user.user_id;
     const result = await domainService.verifyDomain(domainInfo, userID);
     res.send(result);

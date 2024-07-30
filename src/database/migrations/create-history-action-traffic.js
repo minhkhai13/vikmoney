@@ -2,7 +2,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("DomainTraffics", {
+    await queryInterface.createTable("HistoryActiveTraffics", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -11,24 +11,31 @@ module.exports = {
       },
       user_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      type: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      info: {
+        type: Sequelize.TEXT,
         allowNull: true,
       },
-      domain: {
+      device: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      status: {
-        type: Sequelize.BOOLEAN,
-        allowNull: true,
-      },
-      script_id: {
+      ip: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      deletedAt: {
-        type: Sequelize.DATE,
+      volatility: {
+        type: Sequelize.INTEGER,
         allowNull: true,
-        defaultValue: null,
+      },
+      status_code: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
       },
       createdAt: {
         allowNull: false,
@@ -42,6 +49,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("DomainTraffics");
+    await queryInterface.dropTable("HistoryActiveTraffics");
   },
 };

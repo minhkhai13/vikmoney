@@ -1,4 +1,6 @@
 const dotenv = require("dotenv");
+const { log } = require("winston");
+const { setUpDomain } = require("../services/trafficuser/domain.traffic.service");
 dotenv.config();
 
 module.exports = {
@@ -16,20 +18,33 @@ module.exports = {
     secretTrafic: process.env.JWT_SECRET_TRAFIC,
     secretVikmoney: process.env.JWT_SECRET_VIKMONEY,
     forgotPasswordSecretTrafic: process.env.JWT_FORGOT_PASSWORD_SECRET_TRAFIC,
-    forgotPasswordSecretVikmoney: process.env.JWT_FORGOT_PASSWORD_SECRET_VIKMONEY,
+    forgotPasswordSecretVikmoney:
+      process.env.JWT_FORGOT_PASSWORD_SECRET_VIKMONEY,
     accessExpirationMinutes: 300,
     refreshExpirationDays: 7,
     resetPasswordExpirationMinutes: 30,
     forgotPasswordExpirationMinutes: 30,
     verifyEmailExpirationMinutes: 300,
   },
-  login:{
+  login: {
     type: {
       email: "email",
       facebook: "facebook",
       google: "google",
       phoneNumber: "phoneNumber",
     },
+  },
+  log: {
+    traffic: {
+      login:"login",
+      register:"register",
+      logout:"logout",
+      forgotPassword:"forgotPassword",
+      resetPassword:"resetPassword",
+      verifyEmail:"verifyEmail",
+      setUpDomain:"setUpDomain",
+    },
+    vikmoney: {},
   },
   hashRound: 10,
   oauth2: {

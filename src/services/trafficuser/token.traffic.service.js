@@ -18,7 +18,6 @@ const generateToken = (
       user_id: user.id,
       active: user.active,
       role: user.role,
-      avatar: user.avatar,
       birthday: user.birthday,
       sex: user.sex,
       phone_number: user.phone_number,

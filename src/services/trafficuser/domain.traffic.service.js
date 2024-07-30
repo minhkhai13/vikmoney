@@ -2,7 +2,6 @@ const db = require("../../database/models/index");
 const ApiError = require("../../utils/apiError");
 const uuiv4 = require("uuid");
 const axios = require("axios");
-const cheerio = require("cheerio");
 
 const setUpDomain = async (domain, userID) => {
   try {
@@ -15,11 +14,11 @@ const setUpDomain = async (domain, userID) => {
       domain: domain,
       user_id: userID,
       status: false,
-      domain_code: domainCode,
+      script_id: domainCode,
     });
     if (result) {
       const data = {
-        code: result.domain_code,
+        code: result.script_id,
         domain: result.domain,
         status: result.status,
       };
@@ -58,8 +57,15 @@ const verifyDomain = async (domain, userID) => {
     if (isDomainExist.errorcode !== 200) {
       return isDomainExist;
     }
+    if (!isDomainExist.data?.script_id) {
+      return ApiError.errorCode600("Domain chưa được thêm vào hệ thống");
+    }
 
-    const checkScriptResult = await checkScript("script",domain);
+    const checkScriptResult = await checkScript(
+      isDomainExist.data.script_id,
+      domain
+    );
+    console.log(checkScriptResult);
     if (checkScriptResult.errorcode !== 200) {
       return checkScriptResult;
     }
@@ -83,43 +89,39 @@ const verifyDomain = async (domain, userID) => {
   }
 };
 
-const checkScript = async (script, url) => {
+const checkScript = async (scriptId, url) => {
   try {
-    // Gửi yêu cầu GET đến trang web A
+    url = url.includes("https://") ? url : `https://${url}`;
     const response = await axios.get(url);
-    const html = response.data;
-
-    // Phân tích HTML
-    const $ = cheerio.load(html);
-    const divExists =
-      $('#beelink-campaign-key[data-key="4bLt8a"][data-type="element"]')
-        .length > 0;
-    const scriptExists =
-      $('script[src="https://beelink.app/assets/js/site.js"]').length > 0;
-
-    if (divExists && scriptExists) {
+    if (
+      response.status === 200 &&
+      response.data.includes(
+        `<script src="https://web1s.com/site-u-v5.js?id=${scriptId}"></script>`
+      )
+    ) {
       return ApiError.errorCode200("Script của bạn đã được thêm vào!");
-    } else if (divExists) {
+    } else {
       return ApiError.errorCode600("Script của bạn chưa được thêm vào!");
     }
   } catch (error) {
     console.error(error);
-    return ApiError.errorCode600(error);
+    return ApiError.errorCode600(error.message);
   }
 };
 
 const checkDomain = async (domain, userID) => {
   try {
+    console.log(domain, userID);
     const isDomainExist = await db.DomainTraffic.findOne({
       where: {
         domain: domain,
         user_id: userID,
       },
     });
-    if (isDomainExist) {
+    if (!isDomainExist) {
       return ApiError.errorCode601();
     }
-    return ApiError.errorCode200(isDomainExist);
+    return ApiError.errorCode200("Ok",isDomainExist);
   } catch (error) {
     return ApiError.errorCode600(error);
   }

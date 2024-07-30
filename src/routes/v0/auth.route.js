@@ -4,6 +4,7 @@ const authValidation = require("../../validate/auth.validate");
 const authController = require("../../controllers/trafficuser/auth.traffic.controller");
 const verifyToken = require("../../middlewares/verifyTokenTraffic");
 const passport = require("passport");
+const getDataDeviceUser = require("../../middlewares/getDataDeviceUser");
 
 const router = express.Router();
 router.get("/", (req, res) => {

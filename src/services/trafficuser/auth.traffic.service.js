@@ -50,7 +50,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
   try {
     const user = await userService.getUserByEmail(email);
     if (!user) {
-      return ApiError.errorCode100();
+      return ApiError.errorCode101();
     }
     const islogin = await isPasswordMatch(user, password);
     if (!islogin) {
@@ -64,6 +64,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
       token,
       status: user.status,
       active: user.active,
+      avatar: user.avatar,
     });
   } catch (error) {
     return { status: "error", message: error.message };

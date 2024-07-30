@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const { role } = require("../custom.validate");
+const { query } = require("express");
 
 const updateInforLoginEmail = {
   body: Joi.object().keys({
@@ -13,7 +14,7 @@ const updateInforLoginEmail = {
   }),
 };
 const getAllUser = {
-  body: Joi.object().keys({
+  query: Joi.object().keys({
     page: Joi.number().min(1),
     limit: Joi.number().min(1),
   }),
