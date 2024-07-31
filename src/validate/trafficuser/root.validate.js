@@ -4,11 +4,11 @@ const { password } = require("../custom.validate");
 const updateInforUser = {
   body: Joi.object().keys({
     fullName: Joi.string().required(),
-    birthday: Joi.string().required(),
+    birthday: Joi.string().allow('').required(),
     sex: Joi.bool().required(),
-    location: Joi.string().required(),
-    phoneNumber: Joi.string().required(),
-    inforDetail: Joi.string().required(),
+    location: Joi.string().allow('').required(),
+    phoneNumber: Joi.string().allow('').required(),
+    inforDetail: Joi.string().allow('').required(),
     avatar: Joi.string().allow(""),
     email: Joi.string().allow(""),
     userName: Joi.string().required(),

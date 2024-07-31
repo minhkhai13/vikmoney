@@ -31,6 +31,8 @@ module.exports = (sequelize, DataTypes) => {
     money: DataTypes.INTEGER,
     infor_detail: DataTypes.STRING,
     type_account: DataTypes.STRING,
+    dark_mode: DataTypes.STRING,
+    laguage: DataTypes.BOOLEAN,
     googleId: DataTypes.STRING,
     facebookId: DataTypes.STRING,
     deletedAt: DataTypes.DATE,

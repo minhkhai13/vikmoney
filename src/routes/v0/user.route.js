@@ -40,4 +40,11 @@ router.post(
   userController.updateRoleUsers
 );
 
+router.post(
+  "/update-dack-mode-laguage",
+  validate(userValidation.updateDackModeLaguage),
+  verifyToken.verifyToken,
+  userController.updateDackModeLaguage
+);
+
 module.exports = router;

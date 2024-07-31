@@ -1,6 +1,6 @@
 const db = require("../../database/models/index");
 const bcrypt = require("bcryptjs");
-const { Op } = require("sequelize");
+const { Op, where } = require("sequelize");
 const ApiError = require("../../utils/apiError");
 const config = require("../../config/config");
 
@@ -12,7 +12,13 @@ const cleanText = (text) => {
 };
 
 const getAllUsers = async () => {
-  return db.UserTraffic.findAll();
+  return db.UserTraffic.findAll({
+    where: {
+      role: {
+        [Op.ne]: "root",
+      },
+    },
+  });
 };
 
 const createUserMail = async (name, email, phone_number) => {
@@ -66,6 +72,9 @@ const getUserByEmail = async (email) => {
       "location",
       "money",
       "infor_detail",
+      "type_account",
+      "dark_mode",
+      "laguage",
     ],
   });
 };
@@ -108,7 +117,18 @@ const createUserWithMailPassword = async (name, email, password) => {
     if (checkUser) {
       return ApiError.errorCode205();
     }
-    const result = await db.UserTraffic.create(user,{returning:['id','full_name','email','user_name','role','status','active','type_account']});
+    const result = await db.UserTraffic.create(user, {
+      returning: [
+        "id",
+        "full_name",
+        "email",
+        "user_name",
+        "role",
+        "status",
+        "active",
+        "type_account",
+      ],
+    });
     if (!result) {
       return ApiError.errorCode310("Create user error");
     }
@@ -235,6 +255,7 @@ const getInfor = async (userInfo) => {
 
 const getAllUser = async (page, limit) => {
   try {
+    console.log(page, limit);
     const offet = (page - 1) * limit;
     const result = await db.UserTraffic.findAndCountAll({
       offset: offet,
@@ -253,6 +274,7 @@ const getAllUser = async (page, limit) => {
         "money",
         "type_account",
       ],
+      where: { role: { [db.Sequelize.Op.ne]: "root" } },
     });
     if (!result) {
       return ApiError.errorCode310("Get all user error");
@@ -314,7 +336,24 @@ const activeMail = async (userId, userName) => {
     return ApiError.errorCode200("Active mail success");
   } catch (error) {
     console.log(error);
-    return ApiError.errorCode310((error));
+    return ApiError.errorCode310(error);
+  }
+};
+
+const updateDackModeLaguage = async (id, dackMode, laguage) => {
+  try {
+    const result = await db.UserTraffic.update(
+      { dark_mode: dackMode, laguage: laguage },
+      {
+        where: { id: id },
+      }
+    );
+    if (!result) {
+      return ApiError.errorCode310("Update dack mode and laguage error");
+    }
+    return ApiError.errorCode200("Update dack mode and laguage success");
+  } catch (error) {
+    return ApiError.errorCode310(error);
   }
 };
 module.exports = {
@@ -332,4 +371,5 @@ module.exports = {
   updateRoleUsers,
   updateInforLoginPhoneNumber,
   activeMail,
+  updateDackModeLaguage,
 };

@@ -84,6 +84,15 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      dark_mode: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      laguage: {
+        type: Sequelize.BOOLEAN,
+        allowNull: true,
+        defaultValue: false,
+      },
       googleId: {
         type: Sequelize.STRING,
         allowNull: true,

@@ -65,6 +65,8 @@ const loginUserWithEmailAndPassword = async (email, password) => {
       status: user.status,
       active: user.active,
       avatar: user.avatar,
+      darkMode: user.dark_mode,
+      laguage: user.laguage,
     });
   } catch (error) {
     return { status: "error", message: error.message };

@@ -42,10 +42,18 @@ const updateRoleUsers = async (req, res) => {
   res.status(200).json(result);
 };
 
+const updateDackModeLaguage = async (req, res) => {
+  const { dackMode, laguage } = req.body;
+  const {id} = req.user;
+  const result = await userService.updateDackModeLaguage(id,dackMode, laguage);
+  res.status(200).send(result);
+};
+
 module.exports = {
   updateInforLoginEmail,
   getInfor,
   getAllUser,
   blockUser,
   updateRoleUsers,
+  updateDackModeLaguage,
 };

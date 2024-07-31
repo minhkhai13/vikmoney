@@ -4,18 +4,18 @@ const { role } = require("../custom.validate");
 const updateInforLoginEmail = {
   body: Joi.object().keys({
     fullName: Joi.string().required(),
-    birthday: Joi.string().required(),
+    birthday: Joi.string().allow('').required(),
     sex: Joi.bool().required(),
-    location: Joi.string().required(),
-    phoneNumber: Joi.string().required(),
-    inforDetail: Joi.string().required(),
-    avatar: Joi.string().required(),
+    location: Joi.string().allow('').required(),
+    phoneNumber: Joi.string().allow('').required(),
+    inforDetail: Joi.string().allow('').required(),
+    avatar: Joi.string().allow('').required(),
   }),
 };
 const getAllUser = {
   query: Joi.object().keys({
-    page: Joi.number().min(1),
-    limit: Joi.number().min(1),
+    page: Joi.number().min(1).required(),
+    limit: Joi.number().min(1).required(),
   }),
 };
 
@@ -31,9 +31,17 @@ const updateRoleUsers = {
     role: Joi.string().required().custom(role),
   }),
 };
+
+const updateDackModeLaguage = { 
+  body: Joi.object().keys({
+    dackMode: Joi.bool().required(),
+    laguage: Joi.string().required(),
+  }),
+};
 module.exports = {
   updateInforLoginEmail,
   getAllUser,
   blockUser,
   updateRoleUsers,
+  updateDackModeLaguage,
 };
