@@ -6,7 +6,7 @@ const tokenService = require("../../services/trafficuser/token.traffic.service")
 const emailService = require("../../services/trafficuser/email.traffic.service");
 const historyService = require("../../services/trafficuser/history.traffic.service");
 
-const login = async (req, res,next) => {
+const login = async (req, res, next) => {
   if (req.isAuthenticated()) {
     return res.redirect("http://localhost:3000/");
   }
@@ -23,12 +23,21 @@ const login = async (req, res,next) => {
       }
       return res.status(200).json(user);
     });
-  })(req, res,next);
+  })(req, res, next);
 };
 
 const logout = async (req, res) => {
   req.session.destroy();
-
+  const { browserName, browserVersion, osName, osVersion, deviceType, ip } =
+    req.deviceInfo;
+  historyService.logHistory(
+    req.user.user_id,
+    config.log.traffic.logout,
+    browserName,
+    null,
+    deviceType,
+    ip
+  );
   res.send("logout");
 };
 
@@ -39,6 +48,17 @@ const updatePassword = async (req, res) => {
     oldPassword,
     newPassword,
     userInfo
+  );
+  const { browserName, browserVersion, osName, osVersion, deviceType, ip } =
+    req.deviceInfo;
+  historyService.logHistory(
+    req.user.user_id,
+    config.log.traffic.logout,
+    browserName,
+    null,
+    deviceType,
+    ip,
+    result.errorcode
   );
   res.status(200).send(result);
 };

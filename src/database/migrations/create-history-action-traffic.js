@@ -29,6 +29,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      browser_name: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       volatility: {
         type: Sequelize.INTEGER,
         allowNull: true,

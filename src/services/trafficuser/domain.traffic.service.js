@@ -3,7 +3,7 @@ const ApiError = require("../../utils/apiError");
 const uuiv4 = require("uuid");
 const axios = require("axios");
 
-const setUpDomain = async (domain, userID) => {
+const setUpDomain = async (domain, nameDomain, detailDomain, userID) => {
   try {
     const isDomainExist = await checkDomain(domain, userID);
     if (isDomainExist.errorcode !== 200) {
@@ -15,12 +15,16 @@ const setUpDomain = async (domain, userID) => {
       user_id: userID,
       status: false,
       script_id: domainCode,
+      name: nameDomain,
+      detail_info: detailDomain,
     });
     if (result) {
       const data = {
         code: result.script_id,
         domain: result.domain,
         status: result.status,
+        domainName: result.name,
+        domainInfo: result.detail_info,
       };
       return ApiError.errorCode200("Create domain success", data);
     }
@@ -53,7 +57,7 @@ const getAllDomain = async (userID) => {
 
 const verifyDomain = async (domain, userID) => {
   try {
-    const isDomainExist = await checkDomain(domain, userID);
+    const isDomainExist = await getDomain(domain, userID);
     if (isDomainExist.errorcode !== 200) {
       return isDomainExist;
     }
@@ -118,10 +122,28 @@ const checkDomain = async (domain, userID) => {
         user_id: userID,
       },
     });
-    if (!isDomainExist) {
+    if (isDomainExist) {
       return ApiError.errorCode601();
     }
-    return ApiError.errorCode200("Ok",isDomainExist);
+    return ApiError.errorCode200("Ok", isDomainExist);
+  } catch (error) {
+    return ApiError.errorCode600(error);
+  }
+};
+
+const getDomain = async (domain, userID) => {
+  try {
+    console.log(domain, userID);
+    const dataDomain = await db.DomainTraffic.findOne({
+      where: {
+        domain: domain,
+        user_id: userID,
+      },
+    });
+    if (!dataDomain) {
+      return ApiError.errorCode601();
+    }
+    return ApiError.errorCode200("Ok", dataDomain);
   } catch (error) {
     return ApiError.errorCode600(error);
   }

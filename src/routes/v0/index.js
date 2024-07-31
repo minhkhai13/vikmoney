@@ -4,6 +4,7 @@ const router = express.Router();
 const authRouter = require("./auth.route");
 const userRouter = require("./user.route"); // Sửa lỗi chính tả từ 'userRoter' thành 'userRouter'
 const domainRouter = require("./domain.route");
+const rootRouter = require("./root.route");
 
 const defaultRouter = [
   {
@@ -17,6 +18,10 @@ const defaultRouter = [
   {
     path: "/domain",
     router: domainRouter,
+  },
+  {
+    path: "/root",
+    router: rootRouter,
   },
 ];
 

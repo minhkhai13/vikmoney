@@ -3,7 +3,6 @@ const bcrypt = require("bcryptjs");
 const { Op } = require("sequelize");
 const ApiError = require("../../utils/apiError");
 const config = require("../../config/config");
-const e = require("express");
 
 const cleanText = (text) => {
   let value = text || "";
@@ -106,11 +105,10 @@ const createUserWithMailPassword = async (name, email, password) => {
       raw: true,
       attributes: ["id"],
     });
-    console.log("checkUser, ", checkUser);
     if (checkUser) {
       return ApiError.errorCode205();
     }
-    const result = await db.UserTraffic.create(user);
+    const result = await db.UserTraffic.create(user,{returning:['id','full_name','email','user_name','role','status','active','type_account']});
     if (!result) {
       return ApiError.errorCode310("Create user error");
     }
@@ -177,6 +175,34 @@ const updateInforLoginEmail = async (userInfo, id, userName) => {
   }
 };
 
+const updateInforLoginPhoneNumber = async (userInfo, id, userName) => {
+  try {
+    console.log(userInfo);
+    console.log(id, userName);
+    const result = await db.UserTraffic.update(
+      {
+        full_name: userInfo.fullName,
+        avatar: userInfo.avatar,
+        birthday: userInfo.birthday,
+        location: userInfo.location,
+        email: userInfo.email,
+        infor_detail: userInfo.inforDetail,
+        sex: userInfo.sex,
+      },
+      {
+        where: { id: id, user_name: userName },
+      }
+    );
+    if (result) {
+      return ApiError.errorCode200("Update infor success");
+    }
+    return ApiError.errorCode310("Update infor error");
+  } catch (error) {
+    console.log(error);
+    return ApiError.errorCode310(error);
+  }
+};
+
 const getInfor = async (userInfo) => {
   try {
     if (!userInfo.user_id || !userInfo.user_name) {
@@ -223,7 +249,9 @@ const getAllUser = async (page, limit) => {
         "location",
         "phone_number",
         "infor_detail",
+        "avatar",
         "money",
+        "type_account",
       ],
     });
     if (!result) {
@@ -272,6 +300,23 @@ const updateRoleUsers = async (arrayId, role) => {
   }
 };
 
+const activeMail = async (userId, userName) => {
+  try {
+    const result = await db.UserTraffic.update(
+      { active: true },
+      {
+        where: { id: userId, user_name: userName },
+      }
+    );
+    if (!result) {
+      return ApiError.errorCode310("Active mail error");
+    }
+    return ApiError.errorCode200("Active mail success");
+  } catch (error) {
+    console.log(error);
+    return ApiError.errorCode310((error));
+  }
+};
 module.exports = {
   getAllUsers,
   createUserMail,
@@ -285,4 +330,6 @@ module.exports = {
   getAllUser,
   blockUser,
   updateRoleUsers,
+  updateInforLoginPhoneNumber,
+  activeMail,
 };

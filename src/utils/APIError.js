@@ -60,7 +60,7 @@ const errorCode401 = () => {
   return { errorcode: 401, message: "Unauthorized", data: null };
 };
 
-const errorCode403 = (message, data) => {
+const errorCode403 = (message=null, data =null) => {
   return { errorcode: 403, message: message, data: data };
 };
 const errorCode200 = (message, data=null) => {

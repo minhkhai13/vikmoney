@@ -9,7 +9,7 @@ const getDataDeviceUser = (req, res, next) => {
   const parser = new UAParser();
   const parsedUa = parser.setUA(ua).getResult();
   
-  const browserName = parsedUa.browser.name;
+  const browserName = parsedUa.browser.name|| "Unknown";
   const browserVersion = parsedUa.browser.version;
   const osName = parsedUa.os.name;
   const osVersion = parsedUa.os.version;

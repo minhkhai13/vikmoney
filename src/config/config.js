@@ -67,5 +67,6 @@ module.exports = {
     from: process.env.EMAIL_FROM,
     urlVerifyEmail: process.env.URL_VERIFY_EMAIL,
     urlForgotPassword: process.env.URL_FORGOT_PASSWORD,
+    resetPasswordUrl: process.env.RESET_PASSWORD_URL,
   },
 };

@@ -13,6 +13,10 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
+      name: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       domain: {
         type: Sequelize.STRING,
         allowNull: true,
@@ -23,6 +27,10 @@ module.exports = {
       },
       script_id: {
         type: Sequelize.STRING,
+        allowNull: true,
+      },
+      detail_info: {
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       deletedAt: {

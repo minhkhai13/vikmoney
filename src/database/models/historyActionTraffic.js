@@ -18,6 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       info: DataTypes.TEXT,
       device: DataTypes.STRING,
       ip: DataTypes.STRING,
+      browser_name: DataTypes.STRING,
       volatility: DataTypes.INTEGER,
       status_code:DataTypes.INTEGER,
       createdAt: DataTypes.DATE,

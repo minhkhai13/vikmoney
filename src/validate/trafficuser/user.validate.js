@@ -1,6 +1,5 @@
 const Joi = require("joi");
 const { role } = require("../custom.validate");
-const { query } = require("express");
 
 const updateInforLoginEmail = {
   body: Joi.object().keys({

@@ -8,7 +8,7 @@ const verifyRole = (role = []) => {
         if (role.length && role.includes(req.user.role)) {
             next();
         } else {
-            return res.status(200).send(ApiError.errorCode403());
+            return res.status(200).send(ApiError.errorCode403("Unauthorized"));
         }
     };
 }

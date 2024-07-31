@@ -14,9 +14,11 @@ module.exports = (sequelize, DataTypes) => {
   DomainTraffic.init(
     {
       user_id: DataTypes.INTEGER,
+      name: DataTypes.STRING,
       domain: DataTypes.STRING,
       status: DataTypes.BOOLEAN,
       script_id: DataTypes.STRING,
+      detail_info: DataTypes.TEXT,
       deletedAt: DataTypes.DATE,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
