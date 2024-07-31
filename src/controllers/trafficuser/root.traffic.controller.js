@@ -21,8 +21,16 @@ const updateInforUser = async (req, res) => {
   const result = await rootService.updateInforUser(userInfo);
   res.status(200).json(result);
 };
+
+const rechargeUser = async (req, res) => {
+  const {userId, money} = req.body;
+  const result = await rootService.rechargeUser(userId, money);
+  res.status(200).json(result);
+};
+
 module.exports = {
   insertUserMail,
   activeMail,
   updateInforUser,
+  rechargeUser,
 };

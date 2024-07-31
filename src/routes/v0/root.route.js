@@ -29,4 +29,11 @@ router.post(
   rootController.updateInforUser
 );
 
+router.post(
+  "/recharge-user",
+  verifyTokenTraffic.verifyToken,
+  verifyRole("root"),
+  rootController.rechargeUser
+);
+
 module.exports = router;

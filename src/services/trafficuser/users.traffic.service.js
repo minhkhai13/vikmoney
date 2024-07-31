@@ -273,6 +273,7 @@ const getAllUser = async (page, limit) => {
         "avatar",
         "money",
         "type_account",
+        "created_at",
       ],
       where: { role: { [db.Sequelize.Op.ne]: "root" } },
     });
@@ -356,6 +357,24 @@ const updateDackModeLaguage = async (id, dackMode, laguage) => {
     return ApiError.errorCode310(error);
   }
 };
+
+const rechargeUser = async (userId, money) => {
+  try {
+    const result = await db.UserTraffic.update(
+      { money: db.Sequelize.literal(`money + ${money}`) },
+      {
+        where: { id: userId },
+      }
+    );
+    if (!result) {
+      return ApiError.errorCode310("Recharge user error");
+    }
+    console.log(result);
+    return ApiError.errorCode200("Recharge user success");
+  } catch (error) {
+    return ApiError.errorCode310(error);
+  }
+};
 module.exports = {
   getAllUsers,
   createUserMail,
@@ -372,4 +391,5 @@ module.exports = {
   updateInforLoginPhoneNumber,
   activeMail,
   updateDackModeLaguage,
+  rechargeUser,
 };

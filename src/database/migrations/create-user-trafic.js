@@ -75,6 +75,7 @@ module.exports = {
       money: {
         type: Sequelize.INTEGER,
         allowNull: true,
+        defaultValue: 0,
       },
       infor_detail: {
         type: Sequelize.STRING,

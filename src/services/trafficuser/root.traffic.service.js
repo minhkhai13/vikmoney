@@ -71,8 +71,21 @@ const activeMail = async (userID, userName) => {
   }
 };
 
+const rechargeUser = async (userId, money) => {
+  try {
+    const result = await userService.rechargeUser(userId, money);
+    return result;
+  } catch (error) {
+    if (error.errorcode) {
+      return error;
+    }
+    return ApiError.errorCode310(error);
+  }
+};
+
 module.exports = {
   insertUserMail,
   updateInforUser,
   activeMail,
+  rechargeUser,
 };
