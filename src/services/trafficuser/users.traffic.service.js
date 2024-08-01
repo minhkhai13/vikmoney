@@ -140,12 +140,17 @@ const createUserWithMailPassword = async (name, email, password) => {
 
 const isActiveMail = async (id) => {
   try {
-    return await db.UserTraffic.update(
+
+    const result = await db.UserTraffic.update(
       { active: true },
       {
         where: { id: id },
       }
     );
+    if (result[0] === 0) {
+      return ApiError.errorCode310("Active mail error");
+    }
+    return ApiError.errorCode200("Active mail success");
   } catch (error) {
     throw ApiError.errorCode310(error);
   }
@@ -154,13 +159,16 @@ const isActiveMail = async (id) => {
 const updatePassword = async (id, userName, password) => {
   try {
     const hashPassword = await bcrypt.hashSync(password, config.hashRound);
-    await db.UserTraffic.update(
+    const result = await db.UserTraffic.update(
       { password: hashPassword, updatedAt: new Date() },
       {
         where: { id: id, user_name: userName },
       }
     );
-    return ApiError.errorCode200("Update password success");
+    if(result[0] !== 0){
+      return ApiError.errorCode200("Update password success");
+    }
+    return ApiError.errorCode310("Update password error");
   } catch (error) {
     return ApiError.errorCode310(error);
   }
@@ -182,7 +190,7 @@ const updateInforLoginEmail = async (userInfo, id, userName) => {
         where: { id: id, user_name: userName },
       }
     );
-    if (result) {
+    if (result[0] !== 0) {
       return ApiError.errorCode200("Update infor success");
     }
     return ApiError.errorCode310("Update infor error");
@@ -209,7 +217,7 @@ const updateInforLoginEmailRoot = async (userInfo, id, userName) => {
         where: { id: id, user_name: userName },
       }
     );
-    if (result) {
+    if (result[0] !== 0) {
       return ApiError.errorCode200("Update infor success");
     }
     return ApiError.errorCode310("Update infor error");
@@ -237,7 +245,7 @@ const updateInforLoginPhoneNumber = async (userInfo, id, userName) => {
         where: { id: id, user_name: userName },
       }
     );
-    if (result) {
+    if (result[0] !== 0) {
       return ApiError.errorCode200("Update infor success");
     }
     return ApiError.errorCode310("Update infor error");
@@ -265,7 +273,7 @@ const updateInforLoginPhoneNumberRoot = async (userInfo, id, userName) => {
         where: { id: id, user_name: userName },
       }
     );
-    if (result) {
+    if (result[0] !== 0) {
       return ApiError.errorCode200("Update infor success");
     }
     return ApiError.errorCode310("Update infor error");
@@ -344,13 +352,13 @@ const blockUser = async (arrayIds) => {
   try {
     console.log(arrayIds);
     const result = await db.UserTraffic.update(
-      { status: false, avatar: "ssssss" },
+      { status: false },
       {
         where: { id: arrayIds, role: { [db.Sequelize.Op.ne]: "root" } },
       }
     );
     console.log(result);
-    if (!result) {
+    if (result[0] === 0) {
       return ApiError.errorCode310("Block user error");
     }
     return ApiError.errorCode200("Block user success");
@@ -367,7 +375,7 @@ const updateRoleUsers = async (arrayIds, role) => {
         where: { id: arrayIds, role: { [db.Sequelize.Op.ne]: "root" } },
       }
     );
-    if (!result) {
+    if (result[0] === 0) {
       return ApiError.errorCode310("Update role user error");
     }
     return ApiError.errorCode200("Update role user success");
@@ -405,7 +413,7 @@ const updateDackModeLaguage = async (id, dackMode, laguage) => {
         where: { id: id },
       }
     );
-    if (!result) {
+    if (result[0] === 0) {
       return ApiError.errorCode310("Update dack mode and laguage error");
     }
     return ApiError.errorCode200("Update dack mode and laguage success");
@@ -422,7 +430,7 @@ const rechargeUser = async (userId, money) => {
         where: { id: userId },
       }
     );
-    if (!result) {
+    if (result[0] === 0) {
       return ApiError.errorCode310("Recharge user error");
     }
     console.log(result);
@@ -458,7 +466,7 @@ const unBlockUser = async (userIds) => {
         where: { id: userIds, role: { [db.Sequelize.Op.ne]: "root" } },
       }
     );
-    if (!result) {
+    if (result[0] === 0) {
       return ApiError.errorCode310("Unblock user error");
     }
     return ApiError.errorCode200("Unblock user success");

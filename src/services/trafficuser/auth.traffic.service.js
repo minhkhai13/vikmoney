@@ -98,7 +98,7 @@ const verifyEmail = async (verifyEmailToken) => {
     }
     let tokenDoc = verifyEmailTokenDoc.tokenDoc;
     const user = await userService.isActiveMail(tokenDoc.user_id);
-    if (!user) {
+    if (user.errorcode != 200) {
       return ApiError.errorCode204();
     }
     const deleToken = await tokenService.deleteTokenVerifyMail(
