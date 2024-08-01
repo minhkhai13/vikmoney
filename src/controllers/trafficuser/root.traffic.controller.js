@@ -4,14 +4,14 @@ const config = require("../../config/config");
 const rootService = require("../../services/trafficuser/root.traffic.service");
 
 const insertUserMail = async (req, res) => {
-  const { userName, fullName, password } = req.body;
-  const result = await rootService.insertUserMail(fullName, userName, password);
+  const { username, fullName, password } = req.body;
+  const result = await rootService.insertUserMail(fullName, username, password);
   res.status(200).json(result);
 };
 
 const activeMail = async (req, res) => {
-  const {userName, userId} = req.body;
-  const result = await rootService.activeMail(userId, userName);
+  const {username, userId} = req.body;
+  const result = await rootService.activeMail(userId, username);
   res.status(200).json(result);
 };
 

@@ -11,7 +11,7 @@ const updateInforUser = {
     inforDetail: Joi.string().allow('').required(),
     avatar: Joi.string().allow(""),
     email: Joi.string().allow(""),
-    userName: Joi.string().required(),
+    username: Joi.string().required(),
     userId: Joi.number().required(),
     type: Joi.string().valid('email', 'phoneNumber','google').required(),
   }),
@@ -20,14 +20,14 @@ const updateInforUser = {
 const insertUserMail = {
   body: Joi.object().keys({
     fullName: Joi.string().required().empty("").not(null),
-    userName: Joi.string().required().empty("").not(null),
+    username: Joi.string().required().empty("").not(null),
     password: Joi.string().required(password).empty("").not(null),
   }),
 };
 
 const activeMail = {
   params: Joi.object().keys({
-    userName: Joi.string().required(),
+    username: Joi.string().required(),
     userId: Joi.number().required(),
   }),
 };
