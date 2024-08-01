@@ -31,9 +31,33 @@ router.post(
 
 router.post(
   "/recharge-user",
+  validate(rootValidate.rechargeUser),
   verifyTokenTraffic.verifyToken,
   verifyRole("root"),
   rootController.rechargeUser
+);
+
+router.post(
+  "/delete-user",
+  validate(rootValidate.deleteUsers),
+  verifyTokenTraffic.verifyToken,
+  verifyRole("root"),
+  rootController.deleteUser
+);
+
+router.post(
+  "/unblock-user",
+  validate(rootValidate.unBlockUser),
+  verifyTokenTraffic.verifyToken,
+  verifyRole("root"),
+  rootController.unBlockUser
+);
+router.post(
+  "/get-info-user",
+  validate(rootValidate.getInfoUser),
+  verifyTokenTraffic.verifyToken,
+  verifyRole("root"),
+  rootController.getInfoUser
 );
 
 module.exports = router;

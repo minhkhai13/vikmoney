@@ -168,8 +168,6 @@ const updatePassword = async (id, userName, password) => {
 
 const updateInforLoginEmail = async (userInfo, id, userName) => {
   try {
-    console.log(userInfo);
-    console.log(id, userName);
     const result = await db.UserTraffic.update(
       {
         full_name: userInfo.fullName,
@@ -179,6 +177,33 @@ const updateInforLoginEmail = async (userInfo, id, userName) => {
         phone_number: userInfo.phoneNumber,
         infor_detail: userInfo.inforDetail,
         sex: userInfo.sex,
+      },
+      {
+        where: { id: id, user_name: userName },
+      }
+    );
+    if (result) {
+      return ApiError.errorCode200("Update infor success");
+    }
+    return ApiError.errorCode310("Update infor error");
+  } catch (error) {
+    console.log(error);
+    return ApiError.errorCode310(error);
+  }
+};
+
+const updateInforLoginEmailRoot = async (userInfo, id, userName) => {
+  try {
+    const result = await db.UserTraffic.update(
+      {
+        full_name: userInfo.fullName,
+        avatar: userInfo.avatar,
+        birthday: userInfo.birthday,
+        location: userInfo.location,
+        phone_number: userInfo.phoneNumber,
+        infor_detail: userInfo.inforDetail,
+        sex: userInfo.sex,
+        role: userInfo.role,
       },
       {
         where: { id: id, user_name: userName },
@@ -207,6 +232,34 @@ const updateInforLoginPhoneNumber = async (userInfo, id, userName) => {
         email: userInfo.email,
         infor_detail: userInfo.inforDetail,
         sex: userInfo.sex,
+      },
+      {
+        where: { id: id, user_name: userName },
+      }
+    );
+    if (result) {
+      return ApiError.errorCode200("Update infor success");
+    }
+    return ApiError.errorCode310("Update infor error");
+  } catch (error) {
+    console.log(error);
+    return ApiError.errorCode310(error);
+  }
+};
+const updateInforLoginPhoneNumberRoot = async (userInfo, id, userName) => {
+  try {
+    console.log(userInfo);
+    console.log(id, userName);
+    const result = await db.UserTraffic.update(
+      {
+        full_name: userInfo.fullName,
+        avatar: userInfo.avatar,
+        birthday: userInfo.birthday,
+        location: userInfo.location,
+        email: userInfo.email,
+        infor_detail: userInfo.inforDetail,
+        sex: userInfo.sex,
+        role: userInfo.role,
       },
       {
         where: { id: id, user_name: userName },
@@ -273,8 +326,10 @@ const getAllUser = async (page, limit) => {
         "money",
         "type_account",
         "createdAt",
+        "status",
+        "active",
       ],
-      where: { role: { [db.Sequelize.Op.ne]: "root" } },
+      where: { role: { [db.Sequelize.Op.ne]: "root" }, deletedAt: null },
     });
     if (!result) {
       return ApiError.errorCode310("Get all user error");
@@ -285,14 +340,16 @@ const getAllUser = async (page, limit) => {
   }
 };
 
-const blockUser = async (arrayId) => {
+const blockUser = async (arrayIds) => {
   try {
+    console.log(arrayIds);
     const result = await db.UserTraffic.update(
-      { status: false },
+      { status: false, avatar: "ssssss" },
       {
-        where: { id: arrayId, role: { [db.Sequelize.Op.ne]: "root" } },
+        where: { id: arrayIds, role: { [db.Sequelize.Op.ne]: "root" } },
       }
     );
+    console.log(result);
     if (!result) {
       return ApiError.errorCode310("Block user error");
     }
@@ -302,12 +359,12 @@ const blockUser = async (arrayId) => {
   }
 };
 
-const updateRoleUsers = async (arrayId, role) => {
+const updateRoleUsers = async (arrayIds, role) => {
   try {
     const result = await db.UserTraffic.update(
       { role: role },
       {
-        where: { id: arrayId, role: { [db.Sequelize.Op.ne]: "root" } },
+        where: { id: arrayIds, role: { [db.Sequelize.Op.ne]: "root" } },
       }
     );
     if (!result) {
@@ -374,6 +431,73 @@ const rechargeUser = async (userId, money) => {
     return ApiError.errorCode310(error);
   }
 };
+
+const deleteUser = async (userIds) => {
+  try {
+    const result = await db.UserTraffic.update(
+      { deletedAt: new Date() },
+      {
+        where: { id: userIds, role: { [db.Sequelize.Op.ne]: "root" } },
+      }
+    );
+
+    if (result[0] === 0) {
+      return ApiError.errorCode310("Delete user error: No records updated");
+    }
+    return ApiError.errorCode200("Delete user success");
+  } catch (error) {
+    return ApiError.errorCode310(error.message || "Delete user error");
+  }
+};
+
+const unBlockUser = async (userIds) => {
+  try {
+    const result = await db.UserTraffic.update(
+      { status: true },
+      {
+        where: { id: userIds, role: { [db.Sequelize.Op.ne]: "root" } },
+      }
+    );
+    if (!result) {
+      return ApiError.errorCode310("Unblock user error");
+    }
+    return ApiError.errorCode200("Unblock user success");
+  } catch (error) {
+    return ApiError.errorCode310(error);
+  }
+};
+
+const getInfoUserRoot = async (userId) => {
+  try {
+    const result = await db.UserTraffic.findOne({
+      where: { id: userId, role: { [db.Sequelize.Op.ne]: "root" }, deletedAt: null },
+      raw: true,
+      attributes: [
+        "id",
+        "user_name",
+        "full_name",
+        "email",
+        "birthday",
+        "location",
+        "phone_number",
+        "infor_detail",
+        "avatar",
+        "money",
+        "type_account",
+        "createdAt",
+        "status",
+        "active",
+      ],
+    });
+    if (!result) {
+      return ApiError.errorCode310("Get infor user error");
+    }
+    return ApiError.errorCode200("Get infor user success", result);
+  } catch (error) {
+    return ApiError.errorCode310(error);
+  }
+};
+
 module.exports = {
   getAllUsers,
   createUserMail,
@@ -383,6 +507,8 @@ module.exports = {
   getUserById,
   updatePassword,
   updateInforLoginEmail,
+  updateInforLoginEmailRoot,
+  updateInforLoginPhoneNumberRoot,
   getInfor,
   getAllUser,
   blockUser,
@@ -391,4 +517,7 @@ module.exports = {
   activeMail,
   updateDackModeLaguage,
   rechargeUser,
+  deleteUser,
+  unBlockUser,
+  getInfoUserRoot,
 };

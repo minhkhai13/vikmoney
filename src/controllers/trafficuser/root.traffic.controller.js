@@ -28,9 +28,29 @@ const rechargeUser = async (req, res) => {
   res.status(200).json(result);
 };
 
+const deleteUser = async (req, res) => {
+  const {userIds} = req.body;
+  const result = await rootService.deleteUser(userIds);
+  res.status(200).json(result);
+};
+
+const unBlockUser = async (req, res) => {
+  const {userIds} = req.body;
+  const result = await rootService.unBlockUser(userIds);
+  res.status(200).json(result);
+};
+
+const getInfoUser = async (req, res) => {
+  const {userId} = req.body;
+  const result = await rootService.getInfoUser(userId);
+  res.status(200).json(result);
+};
 module.exports = {
   insertUserMail,
   activeMail,
   updateInforUser,
   rechargeUser,
+  deleteUser,
+  unBlockUser,
+  getInfoUser,
 };

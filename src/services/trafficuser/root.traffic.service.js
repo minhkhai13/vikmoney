@@ -35,14 +35,14 @@ const updateInforUser = async (userInfo) => {
     const user_id = userInfo.userId;
     const user_name = userInfo.userName;
     if (config.login.type.email == type) {
-      const result = await userService.updateInforLoginEmail(
+      const result = await userService.updateInforLoginEmailRoot(
         userInfo,
         user_id,
         user_name
       );
       return result;
     } else if (config.login.type.phoneNumber == type) {
-      const result = await userService.updateInforLoginPhoneNumber(
+      const result = await userService.updateInforLoginPhoneNumberRoot(
         userInfo,
         user_id,
         user_name
@@ -83,9 +83,47 @@ const rechargeUser = async (userId, money) => {
   }
 };
 
+const deleteUser = async (userId, userName) => {
+  try {
+    const result = await userService.deleteUser(userId, userName);
+    return result;
+  } catch (error) {
+    if (error.errorcode) {
+      return error;
+    }
+    return ApiError.errorCode310(error);
+  }
+};
+
+const unBlockUser = async (userId, userName) => {
+  try {
+    const result = await userService.unBlockUser(userId, userName);
+    return result;
+  } catch (error) {
+    if (error.errorcode) {
+      return error;
+    }
+    return ApiError.errorCode310(error);
+  }
+};
+
+const getInfoUser = async (userId) => {
+  try {
+    const result = await userService.getInfoUserRoot(userId);
+    return result;
+  } catch (error) {
+    if (error.errorcode) {
+      return error;
+    }
+    return ApiError.errorCode310(error);
+  }
+};
 module.exports = {
   insertUserMail,
   updateInforUser,
   activeMail,
   rechargeUser,
+  deleteUser,
+  unBlockUser,
+  getInfoUser,
 };
