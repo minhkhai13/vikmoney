@@ -19,8 +19,8 @@ const updateInforUser = {
 
 const insertUserMail = {
   body: Joi.object().keys({
-    name: Joi.string().required().empty("").not(null),
-    email: Joi.string().required().empty("").not(null),
+    fullName: Joi.string().required().empty("").not(null),
+    userName: Joi.string().required().empty("").not(null),
     password: Joi.string().required(password).empty("").not(null),
   }),
 };

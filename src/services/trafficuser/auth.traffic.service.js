@@ -69,7 +69,10 @@ const loginUserWithEmailAndPassword = async (email, password) => {
       laguage: user.laguage,
     });
   } catch (error) {
-    return { status: "error", message: error.message };
+    if(error.errorcode){
+      return error;
+    }
+    return ApiError.errorCode310(error.message);
   }
 };
 

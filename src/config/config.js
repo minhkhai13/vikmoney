@@ -1,6 +1,4 @@
 const dotenv = require("dotenv");
-const { log } = require("winston");
-const { setUpDomain } = require("../services/trafficuser/domain.traffic.service");
 dotenv.config();
 
 module.exports = {
@@ -13,6 +11,7 @@ module.exports = {
     minConnection: process.env.MIN_CONNECTION,
     maxConnection: process.env.MAX_CONNECTION,
     enableSqlLogging: process.env.ENABLE_SQL_LOGGING,
+    dialect: process.env.DIALECT,
   },
   jwt: {
     secretTrafic: process.env.JWT_SECRET_TRAFIC,
@@ -36,13 +35,13 @@ module.exports = {
   },
   log: {
     traffic: {
-      login:"login",
-      register:"register",
-      logout:"logout",
-      forgotPassword:"forgotPassword",
-      resetPassword:"resetPassword",
-      verifyEmail:"verifyEmail",
-      setUpDomain:"setUpDomain",
+      login: "login",
+      register: "register",
+      logout: "logout",
+      forgotPassword: "forgotPassword",
+      resetPassword: "resetPassword",
+      verifyEmail: "verifyEmail",
+      setUpDomain: "setUpDomain",
     },
     vikmoney: {},
   },
@@ -63,10 +62,19 @@ module.exports = {
   // googleRedirectUrlV3: `${process.env.HOST}/api/v0/auth/google/callback`,
   googleRedirectUrlV3: process.env.GOOGLE_REDIRECT_URL,
   email: {
-    passMail: process.env.PASS_MAIL,
-    from: process.env.EMAIL_FROM,
-    urlVerifyEmail: process.env.URL_VERIFY_EMAIL,
-    urlForgotPassword: process.env.URL_FORGOT_PASSWORD,
-    resetPasswordUrl: process.env.RESET_PASSWORD_URL,
+    traffic: {
+      passMail: process.env.PASS_MAIL,
+      from: process.env.EMAIL_FROM,
+      urlVerifyEmail: process.env.URL_VERIFY_EMAIL,
+      urlForgotPassword: process.env.URL_FORGOT_PASSWORD,
+      resetPasswordUrl: process.env.RESET_PASSWORD_URL,
+    },
+    vikmoney: {
+      passMail: process.env.PASS_MAIL,
+      from: process.env.EMAIL_FROM,
+      urlVerifyEmail: process.env.URL_VERIFY_EMAIL_VIK,
+      urlForgotPassword: process.env.URL_FORGOT_PASSWORD_VIK,
+      resetPasswordUrl: process.env.RESET_PASSWORD_URL_VIK,
+    },
   },
 };

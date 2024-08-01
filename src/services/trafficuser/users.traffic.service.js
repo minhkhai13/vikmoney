@@ -95,10 +95,9 @@ const createUserWithMailPassword = async (name, email, password) => {
   // hash pasword
   try {
     const cleanEmail = cleanText(email);
-    const cleanName = cleanText(name);
     const hashPassword = await bcrypt.hashSync(password, config.hashRound);
     const user = {
-      full_name: cleanName,
+      full_name: name,
       email: cleanEmail,
       user_name: cleanEmail,
       password: hashPassword,
@@ -273,7 +272,7 @@ const getAllUser = async (page, limit) => {
         "avatar",
         "money",
         "type_account",
-        "created_at",
+        "createdAt",
       ],
       where: { role: { [db.Sequelize.Op.ne]: "root" } },
     });

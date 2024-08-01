@@ -4,8 +4,8 @@ const config = require("../../config/config");
 const rootService = require("../../services/trafficuser/root.traffic.service");
 
 const insertUserMail = async (req, res) => {
-  const { name, email, password } = req.body;
-  const result = await rootService.insertUserMail(name, email, password);
+  const { userName, fullName, password } = req.body;
+  const result = await rootService.insertUserMail(fullName, userName, password);
   res.status(200).json(result);
 };
 
