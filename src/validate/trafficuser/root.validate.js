@@ -1,5 +1,6 @@
 const Joi = require("joi");
 const { password, role } = require("../custom.validate");
+const { info } = require("winston");
 
 const updateInforUser = {
   body: Joi.object().keys({
@@ -43,6 +44,7 @@ const rechargeUser = {
   body: Joi.object().keys({
     userId: Joi.number().required(),
     money: Joi.number().required(),
+    info: Joi.string().allow("").required(),
   }),
 };
 
