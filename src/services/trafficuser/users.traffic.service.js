@@ -495,6 +495,7 @@ const getInfoUserRoot = async (userId) => {
         "createdAt",
         "status",
         "active",
+        "role",
       ],
     });
     if (!result) {

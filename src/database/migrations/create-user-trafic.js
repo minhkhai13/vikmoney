@@ -33,11 +33,11 @@ module.exports = {
         unique: true,
       },
       accept_token: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       refesh_token: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       role: {
@@ -64,7 +64,7 @@ module.exports = {
         defaultValue: false,
       },
       avatar: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: true,
       },
       active: {

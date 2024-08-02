@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   TokenVikmoney.init({
-    token: DataTypes.STRING,
+    token: DataTypes.TEXT,
     type: DataTypes.STRING,
     expires: DataTypes.STRING,
     user_id: DataTypes.STRING,
