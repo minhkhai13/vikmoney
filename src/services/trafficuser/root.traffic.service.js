@@ -33,7 +33,7 @@ const updateInforUser = async (userInfo) => {
   try {
     const type = userInfo.type;
     const user_id = userInfo.userId;
-    const user_name = userInfo.userName;
+    const user_name = userInfo.username;
     if (config.login.type.email == type) {
       const result = await userService.updateInforLoginEmailRoot(
         userInfo,

@@ -5,7 +5,7 @@ const authRouter = require("./auth.route");
 const userRouter = require("./user.route"); // Sửa lỗi chính tả từ 'userRoter' thành 'userRouter'
 const domainRouter = require("./domain.route");
 const rootRouter = require("./root.route");
-
+const campRouter = require("./camp.route");
 const defaultRouter = [
   {
     path: "/auth",
@@ -23,6 +23,10 @@ const defaultRouter = [
     path: "/root",
     router: rootRouter,
   },
+  {
+    path:"/camp",
+    router: campRouter,
+  }
 ];
 
 defaultRouter.forEach((route) => {

@@ -2,7 +2,10 @@ require("dotenv").config();
 
 // config/cors.js
 const configCors = (req, res, next) => {
-  const allowedOrigins = [process.env.HOST_FE, process.env.HOST_VIK];
+  const allowedOrigins = [
+    process.env.HOST_FE,
+    process.env.HOST_VIK,
+  ];
   const origin = req.headers.origin;
 
   if (allowedOrigins.includes(origin)) {
