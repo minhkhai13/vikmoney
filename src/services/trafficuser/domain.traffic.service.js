@@ -20,6 +20,7 @@ const setUpDomain = async (domain, nameDomain, detailDomain, userID) => {
     });
     if (result) {
       const data = {
+        id: result.id,
         code: result.script_id,
         domain: result.domain,
         status: result.status,
