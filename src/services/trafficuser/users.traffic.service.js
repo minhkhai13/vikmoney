@@ -140,7 +140,6 @@ const createUserWithMailPassword = async (name, email, password) => {
 
 const isActiveMail = async (id) => {
   try {
-
     const result = await db.UserTraffic.update(
       { active: true },
       {
@@ -165,7 +164,7 @@ const updatePassword = async (id, userName, password) => {
         where: { id: id, user_name: userName },
       }
     );
-    if(result[0] !== 0){
+    if (result[0] !== 0) {
       return ApiError.errorCode200("Update password success");
     }
     return ApiError.errorCode310("Update password error");
@@ -387,18 +386,36 @@ const updateRoleUsers = async (arrayIds, role) => {
   }
 };
 
-const activeMail = async (userId, userName) => {
+const activeMail = async (userId) => {
   try {
     const result = await db.UserTraffic.update(
       { active: true },
       {
-        where: { id: userId, user_name: userName },
+        where: { id: userId, role: { [db.Sequelize.Op.ne]: "root" } },
       }
     );
-    if (!result) {
+    if (result[0] === 0) {
       return ApiError.errorCode310("Active mail error");
     }
     return ApiError.errorCode200("Active mail success");
+  } catch (error) {
+    console.log(error);
+    return ApiError.errorCode310(error);
+  }
+};
+
+const unActiveMail = async (userId) => {
+  try {
+    const result = await db.UserTraffic.update(
+      { active: false },
+      {
+        where: { id: userId, role: { [db.Sequelize.Op.ne]: "root" } },
+      }
+    );
+    if (result[0] === 0) {
+      return ApiError.errorCode310("Unactive mail error");
+    }
+    return ApiError.errorCode200("Unactive mail success");
   } catch (error) {
     console.log(error);
     return ApiError.errorCode310(error);
@@ -478,7 +495,11 @@ const unBlockUser = async (userIds) => {
 const getInfoUserRoot = async (userId) => {
   try {
     const result = await db.UserTraffic.findOne({
-      where: { id: userId, role: { [db.Sequelize.Op.ne]: "root" }, deletedAt: null },
+      where: {
+        id: userId,
+        role: { [db.Sequelize.Op.ne]: "root" },
+        deletedAt: null,
+      },
       raw: true,
       attributes: [
         "id",
@@ -496,6 +517,7 @@ const getInfoUserRoot = async (userId) => {
         "status",
         "active",
         "role",
+        "sex",
       ],
     });
     if (!result) {
@@ -524,6 +546,7 @@ module.exports = {
   updateRoleUsers,
   updateInforLoginPhoneNumber,
   activeMail,
+  unActiveMail,
   updateDackModeLaguage,
   rechargeUser,
   deleteUser,

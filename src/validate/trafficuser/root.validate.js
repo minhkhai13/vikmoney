@@ -29,7 +29,6 @@ const insertUserMail = {
 
 const activeMail = {
   params: Joi.object().keys({
-    username: Joi.string().required(),
     userId: Joi.number().required(),
   }),
 };

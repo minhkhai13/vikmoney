@@ -20,6 +20,7 @@ const verifyToken = async (req, res, next) => {
     if (userInfo && userInfo.sub?.user_id && userInfo.sub?.user_name) {
       const dataUser = await userService.getUserById(userInfo.sub?.user_id);
       if (!dataUser) {
+        console.log("dasssssssssssssstaUser", dataUser);
         return res.status(200).send(ApiError.errorCode101());
       }
       if (!dataUser.status) {
@@ -54,6 +55,8 @@ const verifyTokenSendMail = async (req, res, next) => {
     if (userInfo && userInfo.sub?.user_id) {
       const dataUser = await userService.getUserById(userInfo.sub?.user_id);
       if (!dataUser) {
+        console.log("dasssssssssssssssssaaaaaasssstaUser", dataUser);
+
         return res.status(200).send(ApiError.errorCode101());
       }
       if (!dataUser.status) {

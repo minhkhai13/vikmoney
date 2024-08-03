@@ -69,6 +69,7 @@ const resetPassword = async (req, res) => {
 const sendVerificationEmail = async (req, res) => {
   const user = req.user;
   const email = user.email;
+  console.log(email);
   const tokenVerifyMail = await tokenService.generateAuthTokensVerifyEmail(
     user
   );

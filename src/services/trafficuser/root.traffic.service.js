@@ -59,9 +59,21 @@ const updateInforUser = async (userInfo) => {
   }
 };
 
-const activeMail = async (userID, userName) => {
+const activeMail = async (userID) => {
   try {
-    const result = await userService.activeMail(userID, userName);
+    const result = await userService.activeMail(userID);
+    return result;
+  } catch (error) {
+    if (error.errorcode) {
+      return error;
+    }
+    return ApiError.errorCode310(error);
+  }
+};
+
+const unActiveMail = async (userID) => {
+  try {
+    const result = await userService.unActiveMail(userID);
     return result;
   } catch (error) {
     if (error.errorcode) {
@@ -126,4 +138,5 @@ module.exports = {
   deleteUser,
   unBlockUser,
   getInfoUser,
+  unActiveMail,
 };

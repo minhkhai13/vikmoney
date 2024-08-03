@@ -44,12 +44,20 @@ const getAllDomain = async (userID) => {
       where: {
         user_id: userID,
       },
-      attributes: ["domain", "status", "domain_code"],
+      attributes: ["domain", "status", "script_id", "name", "detail_info"],
     });
     if (!result) {
       return ApiError.errorCode600("Get all domain fail");
     }
-    return ApiError.errorCode200("Get all domain success", result);
+    // Định dạng lại dữ liệu
+    const formattedResult = result.map((item) => ({
+      domain: item.domain,
+      status: item.status,
+      code: item.script_id, // "code" từ "script_id"
+      domainName: item.name,
+      domainInfo: item.detail_info, // "domainInfo" từ "detail_info"
+    }));
+    return ApiError.errorCode200("Get all domain success", formattedResult);
   } catch (error) {
     return ApiError.errorCode600(error);
   }

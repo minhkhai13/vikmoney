@@ -4,7 +4,7 @@ module.exports = {
   development: {
     username: config.database.username,
     password: config.database.password,
-    database: config.database.database,
+    database: config.database.databaseName,
     host: config.database.host,
     dialect: config.database.dialect,
   },

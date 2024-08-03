@@ -10,8 +10,14 @@ const insertUserMail = async (req, res) => {
 };
 
 const activeMail = async (req, res) => {
-  const {username, userId} = req.body;
-  const result = await rootService.activeMail(userId, username);
+  const {userId} = req.body;
+  const result = await rootService.activeMail(userId);
+  res.status(200).json(result);
+};
+
+const unActiveMail = async (req, res) => {
+  const {userId} = req.body;
+  const result = await rootService.unActiveMail(userId);
   res.status(200).json(result);
 };
 
@@ -53,4 +59,5 @@ module.exports = {
   deleteUser,
   unBlockUser,
   getInfoUser,
+  unActiveMail,
 };

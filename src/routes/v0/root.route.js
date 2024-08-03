@@ -22,6 +22,12 @@ router.post(
   rootController.activeMail
 );
 router.post(
+  "/unactive-mail",
+  verifyTokenTraffic.verifyToken,
+  verifyRole("root"),
+  rootController.unActiveMail
+);
+router.post(
   "/update-infor-user-mail",
   validate(rootValidate.updateInforUser),
   verifyTokenTraffic.verifyToken,

@@ -7,7 +7,7 @@ const verifyToken = async (req, res, next) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
   if (!token) {
-    return res.status(401).send(ApiError.errorCode401());
+    return res.status(200).send(ApiError.errorCode401());
   }
   try {
     const userInfo = jwt.verify(token, config.jwt.secretVikmoney);
@@ -15,6 +15,7 @@ const verifyToken = async (req, res, next) => {
     if (userInfo && userInfo.sub?.user_id) {
       const dataUser = await userService.getUserById(userInfo.sub?.user_id);
       if (!dataUser) {
+        console.log("dataUser", dataUser);
         return res.status(101).send(ApiError.errorCode101());
       }
       if (!dataUser.status) {
@@ -26,10 +27,10 @@ const verifyToken = async (req, res, next) => {
       req.user = userInfo.sub;
       next();
     } else {
-      return res.status(401).send(ApiError.errorCode401());
+      return res.status(200).send(ApiError.errorCode401());
     }
   } catch (error) {
-    return res.status(401).send(ApiError.errorCode401());
+    return res.status(200).send(ApiError.errorCode401());
   }
 };
 
@@ -38,7 +39,7 @@ const verifyTokenSendMail = async (req, res, next) => {
   const tokenLogin = authHeader && authHeader.split(" ")[1];
   console.log(tokenLogin, "tokenLogin");
   if (!tokenLogin) {
-    return res.status(401).send(ApiError.errorCode401());
+    return res.status(200).send(ApiError.errorCode401());
   }
   try {
     const userInfo = jwt.verify(tokenLogin, config.jwt.secretVikmoney);
@@ -46,6 +47,7 @@ const verifyTokenSendMail = async (req, res, next) => {
     if (userInfo && userInfo.sub?.user_id) {
       const dataUser = await userService.getUserById(userInfo.sub?.user_id);
       if (!dataUser) {
+        console.log("dataUser", dataUser);
         return res.status(200).send(ApiError.errorCode101());
       }
       if (!dataUser.status) {
