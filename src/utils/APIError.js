@@ -98,6 +98,9 @@ const errorCode600 = (message, data = null) => {
 const errorCode601 = () => {
   return { errorcode: 601, message: "Domain is exist", data: null };
 }
+const errorCode602 = () => {
+  return { errorcode: 601, message: "Domain isn't exist", data: null };
+}
 
 module.exports = {
   errorCode10,
@@ -122,5 +125,6 @@ module.exports = {
   errorCode415,
   errorCode429,
   errorCode600,
-  errorCode601
+  errorCode601,
+  errorCode602
 };
