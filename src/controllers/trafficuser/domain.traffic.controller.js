@@ -34,7 +34,8 @@ const setUpDomain = async (req, res) => {
 const getAllDomain = async (req, res) => {
   try {
     const userID = req.user.user_id;
-    const result = await domainService.getAllDomain(userID);
+    const {page, limit} = req.query;
+    const result = await domainService.getAllDomain(userID, page, limit);
     res.status(200).send(result);
   } catch (error) {}
 };

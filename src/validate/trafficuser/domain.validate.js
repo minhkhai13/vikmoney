@@ -9,7 +9,10 @@ const setupDomain = {
 };
 
 const getAllDomain = {
-  query: Joi.object().keys({}),
+  query: Joi.object().keys({
+    page: Joi.number().required(),
+    limit: Joi.number().required(),
+  }),
 };
 
 const verifyDomain = {

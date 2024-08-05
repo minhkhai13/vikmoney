@@ -14,7 +14,7 @@ router.post(
   domainController.setUpDomain
 );
 
-router.post(
+router.get(
   "/get-all-domain",
   validate(domainValidation.getAllDomain),
   verifyToken.verifyToken,

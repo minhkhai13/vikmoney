@@ -39,14 +39,41 @@ const setUpDomain = async (domain, nameDomain, detailDomain, userID) => {
   }
 };
 
-const getAllDomain = async (userID) => {
+const getAllDomain = async (userID, page, limit) => {
   try {
-    const result = await db.DomainTraffic.findAll({
-      where: {
-        user_id: userID,
-      },
-      attributes: ["domain", "status", "script_id", "name", "detail_info","id"],
-    });
+    let result = null;
+    if (limit >= 0) {
+      result = await db.DomainTraffic.findAll({
+        where: {
+          user_id: userID,
+        },
+        limit: limit,
+        offset: (page - 1) * limit,
+        attributes: [
+          "domain",
+          "status",
+          "script_id",
+          "name",
+          "detail_info",
+          "id",
+        ],
+        raw: true,
+      });
+    } else if (limit == -1) {
+      result = await db.DomainTraffic.findAll({
+        where: {
+          user_id: userID,
+        },
+        attributes: [
+          "domain",
+          "status",
+          "script_id",
+          "name",
+          "detail_info",
+          "id",
+        ],
+      });
+    }
     if (!result) {
       return ApiError.errorCode600("Get all domain fail");
     }

@@ -314,30 +314,53 @@ const getInfor = async (userInfo) => {
 
 const getAllUser = async (page, limit) => {
   try {
-    console.log(page, limit);
-    const offet = (page - 1) * limit;
-    const result = await db.UserTraffic.findAndCountAll({
-      offset: offet,
-      limit: limit,
-      raw: true,
-      attributes: [
-        "id",
-        "user_name",
-        "full_name",
-        "email",
-        "birthday",
-        "location",
-        "phone_number",
-        "infor_detail",
-        "avatar",
-        "money",
-        "type_account",
-        "createdAt",
-        "status",
-        "active",
-      ],
-      where: { role: { [db.Sequelize.Op.ne]: "root" }, deletedAt: null },
-    });
+    let result = null;
+    if (limit >= 0) {
+      const offet = (page - 1) * limit;
+      result = await db.UserTraffic.findAndCountAll({
+        offset: offet,
+        limit: limit,
+        raw: true,
+        attributes: [
+          "id",
+          "user_name",
+          "full_name",
+          "email",
+          "birthday",
+          "location",
+          "phone_number",
+          "infor_detail",
+          "avatar",
+          "money",
+          "type_account",
+          "createdAt",
+          "status",
+          "active",
+        ],
+        where: { role: { [db.Sequelize.Op.ne]: "root" }, deletedAt: null },
+      });
+    } else if (limit == -1) {
+      result = await db.UserTraffic.findAndCountAll({
+        raw: true,
+        attributes: [
+          "id",
+          "user_name",
+          "full_name",
+          "email",
+          "birthday",
+          "location",
+          "phone_number",
+          "infor_detail",
+          "avatar",
+          "money",
+          "type_account",
+          "createdAt",
+          "status",
+          "active",
+        ],
+        where: { role: { [db.Sequelize.Op.ne]: "root" }, deletedAt: null },
+      });
+    }
     if (!result) {
       return ApiError.errorCode310("Get all user error");
     }
