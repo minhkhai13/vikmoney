@@ -1,20 +1,29 @@
 const express = require("express");
 const router = express.Router();
+const validate = require("../../middlewares/validate");
+const campaignController = require("../../controllers/campaign.controller");
+const campaignValidation = require("../../validate/trafficuser/campaign.validate");
+const verifyTokenTraffic = require("../../middlewares/verifyTokenTraffic");
 
-router.post("/", (req, res) => {
-  const { ip, code } = req.body;
-  const functionString = `
-        (function() {
-            console.log('Executing server-sent function with code: ${code} and IP: ${ip}');
-            alert('Server-sent function executed!');
-        })();
-    `;
-  res.status(200).send({
-    ip,
-    code,
-    taskDuration: 100,
-    functionString,
-  });
-});
+router.post(
+  "/create-google-search",
+  validate(campaignValidation.createGoogleSearch),
+  verifyTokenTraffic.verifyToken,
+  campaignController.createGoogleSearch
+);
+
+router.post(
+  "/create-direct",
+  validate(campaignValidation.createDirect),
+  verifyTokenTraffic.verifyToken,
+  campaignController.createDirect
+);
+
+router.post(
+  "/create-click-backlink",
+  validate(campaignValidation.createClickBacklink),
+  verifyTokenTraffic.verifyToken,
+  verifyTokenTraffic.verifyToken
+);
 
 module.exports = router;

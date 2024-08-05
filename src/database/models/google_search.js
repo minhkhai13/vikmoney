@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
       keyword: DataTypes.STRING,
       url: DataTypes.STRING,
       level: DataTypes.STRING,
-      active: DataTypes.TEXT,
+      action: DataTypes.TEXT,
       total_view: DataTypes.INTEGER,
       day_view: DataTypes.INTEGER,
       total_viewed: DataTypes.INTEGER,

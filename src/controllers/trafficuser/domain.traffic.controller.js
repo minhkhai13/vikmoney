@@ -1,4 +1,3 @@
-const passport = require("passport");
 const catchAsync = require("../../utils/catchAsync");
 const config = require("../../config/config");
 const domainService = require("../../services/trafficuser/domain.traffic.service");

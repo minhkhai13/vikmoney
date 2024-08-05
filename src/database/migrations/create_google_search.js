@@ -26,7 +26,7 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      active: {
+      action: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
