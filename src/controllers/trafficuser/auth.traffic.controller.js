@@ -1,0 +1,141 @@
+const passport = require("passport");
+const catchAsync = require("../../utils/catchAsync");
+const authService = require("../../services/trafficuser/auth.traffic.service");
+const config = require("../../config/config");
+const tokenService = require("../../services/trafficuser/token.traffic.service");
+const emailService = require("../../services/trafficuser/email.traffic.service");
+const historyService = require("../../services/trafficuser/history.traffic.service");
+
+const login = async (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return res.redirect("http://localhost:3000/");
+  }
+  passport.authenticate("login-trafficuser", (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return res.status(401).json({ message: "Authentication failed" });
+    }
+    req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      return res.status(200).json(user);
+    });
+  })(req, res, next);
+};
+
+const logout = async (req, res) => {
+  req.session.destroy();
+  const { browserName, browserVersion, osName, osVersion, deviceType, ip } =
+    req.deviceInfo;
+  historyService.logHistory(
+    req.user.user_id,
+    config.log.traffic.logout,
+    browserName,
+    null,
+    deviceType,
+    ip
+  );
+  res.send("logout");
+};
+
+const updatePassword = async (req, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const userInfo = req.user;
+  const result = await authService.updatePassword(
+    oldPassword,
+    newPassword,
+    userInfo
+  );
+  const { browserName, browserVersion, osName, osVersion, deviceType, ip } =
+    req.deviceInfo;
+  historyService.logHistory(
+    req.user.user_id,
+    config.log.traffic.logout,
+    browserName,
+    null,
+    deviceType,
+    ip,
+    result.errorcode
+  );
+  res.status(200).send(result);
+};
+const active = async (req, res) => {
+  res.send("active");
+};
+
+const verifyEmail = catchAsync(async (req, res) => {
+  const result = await authService.verifyEmail(req.query.token);
+  res.send(result);
+});
+
+const refreshTokens = async (req, res) => {
+  res.send("refreshTokens");
+};
+
+const forgotPasswordMail = async (req, res) => {
+  const emailForgot = req.body.email;
+  const result = await authService.forgotPasswordMail(emailForgot);
+
+  res.status(200).send(result);
+};
+
+const resetPassword = async (req, res) => {
+  const token = req.query.token;
+  const password = req.body.password;
+  const result = await authService.resetPassword(token, password);
+  res.status(200).send(result);
+};
+
+const sendVerificationEmail = async (req, res) => {
+  const user = req.user;
+  const email = user.email;
+  const tokenVerifyMail = await tokenService.generateAuthTokensVerifyEmail(
+    user
+  );
+  const result = await emailService.sendVerificationEmail(
+    email,
+    tokenVerifyMail
+  );
+  res.status(200).send(result);
+};
+
+const googleAuthenticationCallBack = catchAsync(async (req, res) => {
+  const result = await authService.googleAuthenticationCallBack(
+    req.user,
+    req.query.redirectUrl
+  );
+  res.redirect(result);
+});
+
+const facebookAuthentication = async (req, res) => {
+  res.send("facebookAuthentication");
+};
+
+const facebookAuthenticationCallBack = async (req, res) => {
+  res.send("facebookAuthenticationCallBack");
+};
+
+const registerWithMail = async (req, res) => {
+  const { username, password, fullName } = req.body;
+  const user = await authService.registerWithMail(fullName, username, password);
+  res.send(user);
+};
+
+module.exports = {
+  login,
+  logout,
+  active,
+  verifyEmail,
+  refreshTokens,
+  forgotPasswordMail,
+  resetPassword,
+  sendVerificationEmail,
+  googleAuthenticationCallBack,
+  facebookAuthentication,
+  facebookAuthenticationCallBack,
+  registerWithMail,
+  updatePassword,
+};

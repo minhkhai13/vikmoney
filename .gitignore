@@ -95,3 +95,4 @@ jspm_packages/
 
 # Coverage files
 coverage/
+test.http
