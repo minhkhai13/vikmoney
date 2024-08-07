@@ -1,22 +1,21 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class GoogleSearch extends Model {
+  class ClickBacklink extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-      GoogleSearch.belongsTo(models.Campaign, { foreignKey: "campaign_id" });
+      ClickBacklink.belongsTo(models.Campaign, { foreignKey: "campaign_id" });
     }
   }
-  GoogleSearch.init(
+  ClickBacklink.init(
     {
       campaign_id: DataTypes.INTEGER,
-      keyword: DataTypes.STRING,
-      url: DataTypes.STRING,
+      anchor_text_url: DataTypes.STRING,
+      url_backlink: DataTypes.STRING,
       level: DataTypes.STRING,
       action: DataTypes.JSONB,
       total_view: DataTypes.INTEGER,
@@ -32,8 +31,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "GoogleSearch",
+      modelName: "ClickBacklink",
     }
   );
-  return GoogleSearch;
+  return ClickBacklink;
 };

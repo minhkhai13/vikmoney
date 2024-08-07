@@ -6,7 +6,7 @@ const createGoogleSearch = async (req, res) => {
   try {
     const userID = req.user.user_id;
     const dataCamp = req.body;
-    const result = await campaignService.createGoogleSearch(userID,dataCamp);
+    const result = await campaignService.createGoogleSearch(userID, dataCamp);
     // console.log(result);
     // if (result.errorcode === 200) {
     //   historyService.logHistory(
@@ -27,8 +27,8 @@ const createGoogleSearch = async (req, res) => {
 const createDirect = async (req, res) => {
   try {
     const userID = req.user.user_id;
-    const { ip, code } = req.body;
-    const result = await campaignService.createDirect(req.body, userID);
+    const dataCamp = req.body;
+    const result = await campaignService.createDirect(userID, dataCamp);
     if (result.errorcode === 200) {
       historyService.logHistory(
         userID,
@@ -48,8 +48,8 @@ const createDirect = async (req, res) => {
 const createClickBacklink = async (req, res) => {
   try {
     const userID = req.user.user_id;
-    const { ip, code } = req.body;
-    const result = await campaignService.createClickBacklink(req.body, userID);
+    const dataCamp = req.body;
+    const result = await campaignService.createClickBacklink(userID, dataCamp);
     if (result.errorcode === 200) {
       historyService.logHistory(
         userID,

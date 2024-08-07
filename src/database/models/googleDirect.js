@@ -1,21 +1,19 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class GoogleSearch extends Model {
+  class GoogleDirect extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-      GoogleSearch.belongsTo(models.Campaign, { foreignKey: "campaign_id" });
+      GoogleDirect.belongsTo(models.Campaign, { foreignKey: "campaign_id" });
     }
   }
-  GoogleSearch.init(
+  GoogleDirect.init(
     {
       campaign_id: DataTypes.INTEGER,
-      keyword: DataTypes.STRING,
       url: DataTypes.STRING,
       level: DataTypes.STRING,
       action: DataTypes.JSONB,
@@ -32,8 +30,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "GoogleSearch",
+      modelName: "GoogleDirect",
     }
   );
-  return GoogleSearch;
+  return GoogleDirect;
 };

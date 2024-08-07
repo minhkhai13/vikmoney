@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable("GoogleSearches", {
+    await queryInterface.createTable("ClickBacklinks", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -14,11 +14,11 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
-      keyword: {
+      anchor_text_url: {
         type: Sequelize.STRING,
         allowNull: true,
       },
-      url: {
+      url_backlink: {
         type: Sequelize.STRING,
         allowNull: true,
       },
@@ -83,6 +83,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable("GoogleSearches");
+    await queryInterface.dropTable("ClickBacklinks");
   },
 };

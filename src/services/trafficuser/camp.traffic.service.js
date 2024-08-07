@@ -3,8 +3,10 @@ const ApiError = require("../../utils/apiError");
 const { Op } = require("sequelize");
 
 const createGoogleSearch = async (userId, dataCamp) => {
+  const type = "GoogleSearch";
+  const transaction = await db.sequelize.transaction();
+
   try {
-    const type = "GoogleSearch";
     const {
       name,
       isUrl,
@@ -25,13 +27,14 @@ const createGoogleSearch = async (userId, dataCamp) => {
       level,
       totalView,
       totalViewDay,
-      info
+      info,
+      transaction
     );
     if (dataInsertCampaign.errorcode !== 200) {
       return dataInsertCampaign;
     }
     const campaignId = dataInsertCampaign.data.id;
-    const dataInsertGGSearch = await updateDataInsert(
+    const dataInsertGGSearch = await preDataInsertGGSearch(
       isUrl,
       dataCamp,
       campaignId,
@@ -58,231 +61,120 @@ const createGoogleSearch = async (userId, dataCamp) => {
         },
         {
           raw: true,
+          transaction: transaction,
         }
       );
     } else {
-      const transaction = await db.sequelize.transaction();
       result = await db.GoogleSearch.bulkCreate(dataInsertGGSearch, {
         raw: true,
         transaction,
       });
-      const resultCampaign = await transaction.commit();
-      return ApiError.errorCode200("Create campaign success", resultCampaign);
     }
     if (result) {
+      const resultCampaign = await transaction.commit();
       return ApiError.errorCode200("Create campaign success", result);
+    } else {
+      await transaction.rollback();
+      return ApiError.errorCode310("Create campaign failed");
     }
   } catch (error) {
     console.log(error);
+    await transaction.rollback();
     return ApiError.errorCode310(error.message || "Create campaign failed");
   }
 };
 
-const updateDataInsert = async (
-  isUrl,
-  dataCamp,
-  campId,
-  level,
-  timeMin,
-  timeMax
-) => {
+const createDirect = async (userId, dataCamp) => {
+  const type = "Direct";
+  const transaction = await db.sequelize.transaction();
   try {
-    const { action } = dataCamp;
-    const arrayAction = [];
-    for (let i = 0; i < action.length; i++) {
-      switch (action[i].type) {
-        case "TH1":
-          if (isUrl) {
-            arrayAction.push({
-              type: action[i].type,
-            });
-          } else {
-            arrayAction.push({
-              camp_id: campId,
-              keyword: action[i].keyword,
-              url: action[i].url,
-              total_view: action[i].totalView,
-              day_view: action[i].totalViewDay,
-              level: level,
-              time_min: timeMin,
-              time_max: timeMax,
-              action: JSON.stringify([{ type: action[i].type }]),
-            });
-          }
-          break;
-        case "TH2":
-          if (isUrl) {
-            arrayAction.push({
-              type: action[i].type,
-              percentScroll: action[i].percentScroll,
-            });
-          } else {
-            arrayAction.push({
-              camp_id: campId,
-              keyword: action[i].keyword,
-              url: action[i].url,
-              total_view: action[i].totalView,
-              day_view: action[i].totalViewDay,
-              level: level,
-              time_min: timeMin,
-              time_max: timeMax,
-              action: JSON.stringify([{
-                type: action[i].type,
-                percentScroll: action[i].percentScroll,
-              }]),
-            });
-          }
-          break;
-        case "TH3":
-          console.log("sss", "action[i]");
-          if (isUrl) {
-            arrayAction.push({
-              type: action[i].type,
-              anchorText: action[i].anchorText,
-              idAnchorText: action[i].idAnchorText,
-            });
-          } else {
-            arrayAction.push({
-              camp_id: campId,
-              keyword: action[i].keyword,
-              url: action[i].url,
-              total_view: action[i].totalView,
-              day_view: action[i].totalViewDay,
-              level: level,
-              time_min: timeMin,
-              time_max: timeMax,
-              action: JSON.stringify([{
-                type: action[i].type,
-                anchorText: action[i].anchorText,
-                idAnchorText: action[i].idAnchorText,
-              }]),
-            });
-          }
-          break;
-        case "TH4":
-          if (isUrl) {
-            arrayAction.push({
-              type: action[i].type,
-              nameSubmitForm: action[i].nameSubmitForm,
-              idSubmitForm: action[i].idSubmitForm,
-            });
-          } else {
-            arrayAction.push({
-              camp_id: campId,
-              keyword: action[i].keyword,
-              url: action[i].url,
-              total_view: action[i].totalView,
-              day_view: action[i].totalViewDay,
-              level: level,
-              time_min: timeMin,
-              time_max: timeMax,
-              action: JSON.stringify([{
-                type: action[i].type,
-                nameSubmitForm: action[i].nameSubmitForm,
-                idSubmitForm: action[i].idSubmitForm,
-              }]),
-            });
-          }
-          break;
-        case "TH5":
-          if (isUrl) {
-            arrayAction.push({
-              type: action[i].type,
-              idAds: action[i].idAds,
-            });
-          } else {
-            arrayAction.push({
-              camp_id: campId,
-              keyword: action[i].keyword,
-              url: action[i].url,
-              total_view: action[i].totalView,
-              day_view: action[i].totalViewDay,
-              level: level,
-              time_min: timeMin,
-              time_max: timeMax,
-              action: JSON.stringify([{
-                type: action[i].type,
-                idAds: action[i].idAds,
-              }]),
-            });
-          }
-          break;
-        case "TH6":
-          if (isUrl) {
-            arrayAction.push({
-              type: action[i].type,
-              idPlayVideo: action[i].idPlayVideo,
-            });
-          } else {
-            arrayAction.push({
-              camp_id: campId,
-              keyword: action[i].keyword,
-              url: action[i].url,
-              total_view: action[i].totalView,
-              day_view: action[i].totalViewDay,
-              level: level,
-              time_min: timeMin,
-              time_max: timeMax,
-              action: JSON.stringify([{
-                type: action[i].type,
-                idPlayVideo: action[i].idPlayVideo,
-              }]),
-            });
-          }
-          break;
-        case "TH7":
-          if (isUrl) {
-            arrayAction.push({
-              type: action[i].type,
-              numberNextPage: action[i].numberNextPage,
-            });
-          } else {
-            arrayAction.push({
-              camp_id: campId,
-              keyword: action[i].keyword,
-              url: action[i].url,
-              total_view: action[i].totalView,
-              day_view: action[i].totalViewDay,
-              level: level,
-              time_min: timeMin,
-              time_max: timeMax,
-              action: JSON.stringify([{
-                type: action[i].type,
-                numberNextPage: action[i].numberNextPage,
-              }]),
-            });
-          }
-          break;
-      }
+    const {
+      name,
+      isUrl,
+      info,
+      domainId,
+      totalView,
+      totalViewDay,
+      action,
+      timeMin,
+      timeMax,
+      level,
+    } = dataCamp;
+    const dataInsertCampaign = await insertCampaign(
+      name,
+      userId,
+      domainId,
+      type,
+      level,
+      totalView,
+      totalViewDay,
+      info,
+      transaction
+    );
+    if (dataInsertCampaign.errorcode !== 200) {
+      return dataInsertCampaign;
     }
-    return arrayAction;
+    const campaignId = dataInsertCampaign.data.id;
+    const dataInsertDirect = await preDataInsertDirect(
+      isUrl,
+      dataCamp,
+      campaignId,
+      level,
+      timeMin,
+      timeMax
+    );
+    let result = null;
+    const lengthData = dataInsertDirect.length;
+
+    if (isUrl) {
+      let levelNow = lengthData == 1 ? lengthData : lengthData + 1;
+      result = await db.GoogleDirect.create(
+        {
+          campaign_id: campaignId,
+          action: dataInsertDirect,
+          time_min: timeMin,
+          time_max: timeMax,
+          url: dataCamp.url,
+          total_view: dataCamp.totalView,
+          day_view: dataCamp.totalViewDay,
+          level: levelNow,
+        },
+        {
+          raw: true,
+          transaction: transaction,
+        }
+      );
+    } else {
+      console.log("dataInsertDirect", dataInsertDirect);
+      result = await db.GoogleDirect.bulkCreate(dataInsertDirect, {
+        raw: true,
+        transaction,
+      });
+    }
+
+    if (result) {
+      await transaction.commit();
+      return ApiError.errorCode200("Create campaign success", result);
+    } else {
+      await transaction.rollback();
+      return ApiError.errorCode310("Create campaign failed");
+    }
   } catch (error) {
-    console.log(error);
+    console.log(error, "dssssss");
+    await transaction.rollback();
+    return ApiError.errorCode310(error.message || "Create campaign failed");
   }
 };
 
-const createDirect = async (userId, dataCamp) => {
-  try {
-    const {
-      name,
-      type,
-      info,
-      totalView,
-      totalViewDay,
-      action,
-      timeMin,
-      timeMax,
-      level,
-    } = dataCamp;
-  } catch (error) {}
-};
-
 const createClickBacklink = async (userId, dataCamp) => {
+  const type = "ClickBacklink";
+  const transaction = await db.sequelize.transaction();
   try {
     const {
       name,
-      type,
+      isUrl,
       info,
+      domainId,
       totalView,
       totalViewDay,
       action,
@@ -290,7 +182,71 @@ const createClickBacklink = async (userId, dataCamp) => {
       timeMax,
       level,
     } = dataCamp;
-  } catch (error) {}
+    const dataInsertCampaign = await insertCampaign(
+      name,
+      userId,
+      domainId,
+      type,
+      level,
+      totalView,
+      totalViewDay,
+      info,
+      transaction
+    );
+    if (dataInsertCampaign.errorcode !== 200) {
+      return dataInsertCampaign;
+    }
+    const campaignId = dataInsertCampaign.data.id;
+    const dataInsertDirect = await preDataInsertClickBacklink(
+      isUrl,
+      dataCamp,
+      campaignId,
+      level,
+      timeMin,
+      timeMax
+    );
+    let result = null;
+    const lengthData = dataInsertDirect.length;
+
+    if (isUrl) {
+      let levelNow = lengthData == 1 ? lengthData : lengthData + 1;
+      result = await db.ClickBacklink.create(
+        {
+          campaign_id: campaignId,
+          action: dataInsertDirect,
+          time_min: timeMin,
+          time_max: timeMax,
+          url_backlink: dataCamp.urlBacklink,
+          anchor_text_url: dataCamp.anchorTextUrl,
+          total_view: dataCamp.totalView,
+          day_view: dataCamp.totalViewDay,
+          level: levelNow,
+        },
+        {
+          raw: true,
+          transaction: transaction,
+        }
+      );
+    } else {
+      console.log("dataInsertDirect", dataInsertDirect);
+      result = await db.ClickBacklink.bulkCreate(dataInsertDirect, {
+        raw: true,
+        transaction,
+      });
+    }
+
+    if (result) {
+      await transaction.commit();
+      return ApiError.errorCode200("Create campaign success", result);
+    } else {
+      await transaction.rollback();
+      return ApiError.errorCode310("Create campaign failed");
+    }
+  } catch (error) {
+    console.log(error, "dssssss");
+    await transaction.rollback();
+    return ApiError.errorCode310(error.message || "Create campaign failed");
+  }
 };
 
 const insertCampaign = async (
@@ -301,7 +257,8 @@ const insertCampaign = async (
   level,
   total_view,
   day_view,
-  detail_info
+  detail_info,
+  transaction
 ) => {
   try {
     const result = await db.Campaign.create(
@@ -322,13 +279,14 @@ const insertCampaign = async (
       },
       {
         raw: true,
+        transaction: transaction,
       }
     );
     if (result) {
       return ApiError.errorCode200("Create campaign success", result);
     }
   } catch (error) {
-    console.log(error.name);
+    console.log(error);
     if (error.name === "SequelizeUniqueConstraintError") {
       return ApiError.errorCode311("Campaign name already exists");
     }
@@ -339,6 +297,583 @@ const insertCampaign = async (
   }
 };
 
+const preDataInsertGGSearch = async (
+  isUrl,
+  dataCamp,
+  campId,
+  level,
+  timeMin,
+  timeMax
+) => {
+  try {
+    const { action } = dataCamp;
+    const arrayAction = [];
+    for (let i = 0; i < action.length; i++) {
+      switch (action[i].type) {
+        case "TH1":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              keyword: action[i].keyword,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([{ type: action[i].type }]),
+            });
+          }
+          break;
+        case "TH2":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              percentScroll: action[i].percentScroll,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              keyword: action[i].keyword,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  percentScroll: action[i].percentScroll,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH3":
+          console.log("sss", "action[i]");
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              anchorText: action[i].anchorText,
+              idAnchorText: action[i].idAnchorText,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              keyword: action[i].keyword,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  anchorText: action[i].anchorText,
+                  idAnchorText: action[i].idAnchorText,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH4":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              nameSubmitForm: action[i].nameSubmitForm,
+              idSubmitForm: action[i].idSubmitForm,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              keyword: action[i].keyword,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  nameSubmitForm: action[i].nameSubmitForm,
+                  idSubmitForm: action[i].idSubmitForm,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH5":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              idAds: action[i].idAds,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              keyword: action[i].keyword,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  idAds: action[i].idAds,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH6":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              idPlayVideo: action[i].idPlayVideo,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              keyword: action[i].keyword,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  idPlayVideo: action[i].idPlayVideo,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH7":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              numberNextPage: action[i].numberNextPage,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              keyword: action[i].keyword,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  numberNextPage: action[i].numberNextPage,
+                },
+              ]),
+            });
+          }
+          break;
+      }
+    }
+    return arrayAction;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const preDataInsertDirect = async (
+  isUrl,
+  dataCamp,
+  campId,
+  level,
+  timeMin,
+  timeMax
+) => {
+  try {
+    const { action } = dataCamp;
+    const arrayAction = [];
+    for (let i = 0; i < action.length; i++) {
+      switch (action[i].type) {
+        case "TH1":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([{ type: action[i].type }]),
+            });
+          }
+          break;
+        case "TH2":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              percentScroll: action[i].percentScroll,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  percentScroll: action[i].percentScroll,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH3":
+          console.log("sss", "action[i]");
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              anchorText: action[i].anchorText,
+              idAnchorText: action[i].idAnchorText,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  anchorText: action[i].anchorText,
+                  idAnchorText: action[i].idAnchorText,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH4":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              nameSubmitForm: action[i].nameSubmitForm,
+              idSubmitForm: action[i].idSubmitForm,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  nameSubmitForm: action[i].nameSubmitForm,
+                  idSubmitForm: action[i].idSubmitForm,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH5":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              idAds: action[i].idAds,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  idAds: action[i].idAds,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH6":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              idPlayVideo: action[i].idPlayVideo,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  idPlayVideo: action[i].idPlayVideo,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH7":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              numberNextPage: action[i].numberNextPage,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              url: action[i].url,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  numberNextPage: action[i].numberNextPage,
+                },
+              ]),
+            });
+          }
+          break;
+      }
+    }
+    return arrayAction;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const preDataInsertClickBacklink = async (
+  isUrl,
+  dataCamp,
+  campId,
+  level,
+  timeMin,
+  timeMax
+) => {
+  try {
+    const { action } = dataCamp;
+    const arrayAction = [];
+    for (let i = 0; i < action.length; i++) {
+      switch (action[i].type) {
+        case "TH1":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              anchor_text_url: action[i].anchorTextUrl,
+              url_backlink: action[i].urlBacklink,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([{ type: action[i].type }]),
+            });
+          }
+          break;
+        case "TH2":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              percentScroll: action[i].percentScroll,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              anchor_text_url: action[i].anchorTextUrl,
+              url_backlink: action[i].urlBacklink,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  percentScroll: action[i].percentScroll,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH3":
+          console.log("sss", "action[i]");
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              anchorText: action[i].anchorText,
+              idAnchorText: action[i].idAnchorText,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              anchor_text_url: action[i].anchorTextUrl,
+              url_backlink: action[i].urlBacklink,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  anchorText: action[i].anchorText,
+                  idAnchorText: action[i].idAnchorText,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH4":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              nameSubmitForm: action[i].nameSubmitForm,
+              idSubmitForm: action[i].idSubmitForm,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              anchor_text_url: action[i].anchorTextUrl,
+              url_backlink: action[i].urlBacklink,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  nameSubmitForm: action[i].nameSubmitForm,
+                  idSubmitForm: action[i].idSubmitForm,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH5":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              idAds: action[i].idAds,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              anchor_text_url: action[i].anchorTextUrl,
+              url_backlink: action[i].urlBacklink,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  idAds: action[i].idAds,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH6":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              idPlayVideo: action[i].idPlayVideo,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              anchor_text_url: action[i].anchorTextUrl,
+              url_backlink: action[i].urlBacklink,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  idPlayVideo: action[i].idPlayVideo,
+                },
+              ]),
+            });
+          }
+          break;
+        case "TH7":
+          if (isUrl) {
+            arrayAction.push({
+              type: action[i].type,
+              numberNextPage: action[i].numberNextPage,
+            });
+          } else {
+            arrayAction.push({
+              campaign_id: campId,
+              anchor_text_url: action[i].anchorTextUrl,
+              url_backlink: action[i].urlBacklink,
+              total_view: action[i].totalView,
+              day_view: action[i].totalViewDay,
+              level: level,
+              time_min: timeMin,
+              time_max: timeMax,
+              action: JSON.stringify([
+                {
+                  type: action[i].type,
+                  numberNextPage: action[i].numberNextPage,
+                },
+              ]),
+            });
+          }
+          break;
+      }
+    }
+    return arrayAction;
+  } catch (error) {
+    console.log(error);
+  }
+};
 module.exports = {
   createGoogleSearch,
   createDirect,

@@ -11,6 +11,9 @@ module.exports = (sequelize, DataTypes) => {
       // Define associations here
       Campaign.belongsTo(models.UserTraffic, { foreignKey: "user_id" });
       Campaign.belongsTo(models.DomainTraffic, { foreignKey: "domain_id" });
+      Campaign.hasMany(models.GoogleDirect, { foreignKey: "campaign_id" });
+      Campaign.hasMany(models.GoogleSearch, { foreignKey: "campaign_id" });
+      Campaign.hasMany(models.ClickBacklink, { foreignKey: "campaign_id" });
     }
   }
   Campaign.init(

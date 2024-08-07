@@ -23,7 +23,7 @@ router.post(
   "/create-click-backlink",
   validate(campaignValidation.createClickBacklink),
   verifyTokenTraffic.verifyToken,
-  verifyTokenTraffic.verifyToken
+  campaignController.createClickBacklink
 );
 
 module.exports = router;
