@@ -9,7 +9,7 @@ const router = express.Router();
 
 router.post(
   "/set-up-domain",
-  validate(domainValidation.setUpDomain),
+  validate(domainValidation.setupDomain),
   verifyToken.verifyToken,
   domainController.setUpDomain
 );

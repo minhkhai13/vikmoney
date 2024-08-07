@@ -10,7 +10,7 @@
 // 1xx: General error
 const errorCode10 = (message, data = null) => {
   return { errorcode: 10, message: message, data: data };
-}
+};
 
 //User
 // 100: General error accout is not active
@@ -19,14 +19,17 @@ const errorCode100 = () => {
 };
 // 101: General error account is not found
 const errorCode101 = () => {
-  return { errorcode: 101, message: "Incorrect login name or password", data: null };
+  return {
+    errorcode: 101,
+    message: "Incorrect login name or password",
+    data: null,
+  };
 };
 // 102: General error account is blocked
 
 const errorCode102 = () => {
   return { errorcode: 102, message: "Account is blocked", data: null };
 };
-
 
 // 201 token is not found
 const errorCode201 = () => {
@@ -44,26 +47,29 @@ const errorCode203 = () => {
 
 const errorCode204 = () => {
   return { errorcode: 204, message: "User not found", data: null };
-}
+};
 const errorCode205 = () => {
   return { errorcode: 205, message: "Email already exists", data: null };
-}
+};
 // error database
 // 310
 // Lỗi data base
 const errorCode310 = (message) => {
   return { errorcode: 310, message: message, data: null };
 };
-
+// Lỗi unique
+const errorCode311 = (message) => {
+  return { errorcode: 311, message: message, data: null };
+};
 
 const errorCode401 = () => {
   return { errorcode: 401, message: "Unauthorized", data: null };
 };
 
-const errorCode403 = (message=null, data =null) => {
+const errorCode403 = (message = null, data = null) => {
   return { errorcode: 403, message: message, data: data };
 };
-const errorCode200 = (message, data=null) => {
+const errorCode200 = (message, data = null) => {
   return { errorcode: 200, message: message, data: data };
 };
 const errorCode500 = (message, data) => {
@@ -97,10 +103,10 @@ const errorCode600 = (message, data = null) => {
 };
 const errorCode601 = () => {
   return { errorcode: 601, message: "Domain is exist", data: null };
-}
+};
 const errorCode602 = () => {
   return { errorcode: 601, message: "Domain isn't exist", data: null };
-}
+};
 
 module.exports = {
   errorCode10,
@@ -113,6 +119,7 @@ module.exports = {
   errorCode204,
   errorCode205,
   errorCode310,
+  errorCode311,
   errorCode401,
   errorCode403,
   errorCode200,
@@ -126,5 +133,5 @@ module.exports = {
   errorCode429,
   errorCode600,
   errorCode601,
-  errorCode602
+  errorCode602,
 };

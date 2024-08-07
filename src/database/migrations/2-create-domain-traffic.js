@@ -1,4 +1,6 @@
 "use strict";
+const db = require("../models/index");
+
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -12,6 +14,12 @@ module.exports = {
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: true,
+        references: {
+          model: 'UserTraffics', // Tên của bảng mà nó tham chiếu đến
+          key: "id",
+        },
+        onUpdate: "CASCADE",
+        onDelete: "SET NULL",
       },
       name: {
         type: Sequelize.STRING,

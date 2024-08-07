@@ -3,7 +3,7 @@ const Joi = require("joi");
 const setupDomain = {
   body: Joi.object().keys({
     domain: Joi.string().required(),
-    domainName: Joi.number().required(),
+    domainName: Joi.string().required(),
     domainInfo: Joi.string().required(),
   }),
 };

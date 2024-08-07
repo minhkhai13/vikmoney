@@ -55,6 +55,9 @@ const loginUserWithEmailAndPassword = async (email, password) => {
     if (!user) {
       return ApiError.errorCode100();
     }
+    if (!user.status) {
+      return ApiError.errorCode102();
+    }
     const islogin = await isPasswordMatch(user, password);
     if (!islogin) {
       return ApiError.errorCode101();

@@ -52,6 +52,9 @@ const loginUserWithEmailAndPassword = async (email, password) => {
     if (!user) {
       return ApiError.errorCode101();
     }
+    if (!user.status) {
+      return ApiError.errorCode102();
+    }
     const islogin = await isPasswordMatch(user, password);
     if (!islogin) {
       return ApiError.errorCode101();
@@ -69,7 +72,7 @@ const loginUserWithEmailAndPassword = async (email, password) => {
       laguage: user.laguage,
     });
   } catch (error) {
-    if(error.errorcode){
+    if (error.errorcode) {
       return error;
     }
     return ApiError.errorCode310(error.message);

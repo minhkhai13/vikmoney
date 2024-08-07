@@ -8,7 +8,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Define associations here
+      Campaign.belongsTo(models.UserTraffic, { foreignKey: "user_id" });
+      Campaign.belongsTo(models.DomainTraffic, { foreignKey: "domain_id" });
     }
   }
   Campaign.init(
@@ -23,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       total_viewed: DataTypes.INTEGER,
       day_viewed: DataTypes.INTEGER,
       status: DataTypes.BOOLEAN,
+      isPause: DataTypes.BOOLEAN,
       progress: DataTypes.STRING,
       detail_info: DataTypes.STRING,
       deletedAt: DataTypes.DATE,

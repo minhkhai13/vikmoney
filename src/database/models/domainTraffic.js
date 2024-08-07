@@ -8,7 +8,9 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      // Define association here
+      DomainTraffic.hasMany(models.Campaign, { foreignKey: "domain_id" });
+      DomainTraffic.belongsTo(models.UserTraffic, { foreignKey: "user_id" });
     }
   }
   DomainTraffic.init(

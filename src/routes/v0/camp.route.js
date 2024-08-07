@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const validate = require("../../middlewares/validate");
-const campaignController = require("../../controllers/campaign.controller");
+const campaignController = require("../../controllers/trafficuser/camp.traffic.controller");
 const campaignValidation = require("../../validate/trafficuser/campaign.validate");
 const verifyTokenTraffic = require("../../middlewares/verifyTokenTraffic");
 
