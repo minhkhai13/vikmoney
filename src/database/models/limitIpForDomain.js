@@ -1,7 +1,7 @@
 "use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class DomainTraffic extends Model {
+  class LimitIpForDomain extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -9,29 +9,25 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // Define association here
-      DomainTraffic.hasMany(models.Campaign, { foreignKey: "domain_id" });
-      DomainTraffic.hasMany(models.LimitIpForDomain, { foreignKey: "domain_id" });
-
-      DomainTraffic.belongsTo(models.UserTraffic, { foreignKey: "user_id" });
-
+      LimitIpForDomain.belongsTo(models.UserTraffic, { foreignKey: "user_id" });
+      LimitIpForDomain.belongsTo(models.DomainTraffic, { foreignKey: "domain_id" });
     }
   }
-  DomainTraffic.init(
+  LimitIpForDomain.init(
     {
       user_id: DataTypes.INTEGER,
-      name: DataTypes.STRING,
-      domain: DataTypes.STRING,
+      domain_id: DataTypes.INTEGER,
+      task_id: DataTypes.STRING,
       status: DataTypes.BOOLEAN,
-      script_id: DataTypes.STRING,
-      detail_info: DataTypes.TEXT,
-      deletedAt: DataTypes.DATE,
+      assigned_ip: DataTypes.STRING,
+      assigned_at: DataTypes.DATE,
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE,
     },
     {
       sequelize,
-      modelName: "DomainTraffic",
+      modelName: "LimitIpForDomain",
     }
   );
-  return DomainTraffic;
+  return LimitIpForDomain;
 };

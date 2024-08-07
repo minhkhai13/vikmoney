@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // Define association here
       UserTraffic.hasMany(models.Campaign, { foreignKey: "user_id" });
       UserTraffic.hasMany(models.DomainTraffic, { foreignKey: "user_id" });
+      UserTraffic.hasMany(models.LimitIpForDomain, { foreignKey: "user_id" });
     }
   }
   UserTraffic.init(

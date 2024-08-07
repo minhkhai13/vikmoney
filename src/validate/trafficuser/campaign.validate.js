@@ -11,6 +11,7 @@ const createGoogleSearch = {
       totalViewDay: Joi.number().required(),
       keyword: Joi.string().optional(),
       url: Joi.string().optional(),
+      priority: Joi.number().optional(),
       action: Joi.array()
         .items(
           Joi.object({
@@ -21,6 +22,7 @@ const createGoogleSearch = {
             url: Joi.string().required(),
             totalView: Joi.number().required(),
             totalViewDay: Joi.number().required(),
+            priority: Joi.number().required(),
             anchorText: Joi.string().optional(),
             idAnchorText: Joi.string().optional(),
             idAds: Joi.string().optional(),
@@ -76,6 +78,7 @@ const createGoogleSearch = {
       then: Joi.object({
         keyword: Joi.string().required(),
         url: Joi.string().required(),
+        priority: Joi.number().required(),
       }),
     }),
 };
@@ -90,6 +93,7 @@ const createDirect = {
       totalView: Joi.number().required(),
       totalViewDay: Joi.number().required(),
       url: Joi.string().optional(),
+      priority: Joi.number().optional(),
       action: Joi.array()
         .items(
           Joi.object({
@@ -99,6 +103,7 @@ const createDirect = {
             url: Joi.string().required(),
             totalView: Joi.number().required(),
             totalViewDay: Joi.number().required(),
+            priority: Joi.number().required(),
             anchorText: Joi.string().optional(),
             idAnchorText: Joi.string().optional(),
             idAds: Joi.string().optional(),
@@ -153,6 +158,7 @@ const createDirect = {
     .when(Joi.object({ isUrl: true }).unknown(), {
       then: Joi.object({
         url: Joi.string().required(),
+        priority: Joi.number().required(),
       }),
     }),
 };
@@ -168,6 +174,7 @@ const createClickBacklink = {
       totalViewDay: Joi.number().required(),
       anchorTextUrl: Joi.string().optional(),
       urlBacklink: Joi.string().optional(),
+      priority: Joi.number().optional(),
       action: Joi.array()
         .items(
           Joi.object({
@@ -178,6 +185,7 @@ const createClickBacklink = {
             urlBacklink: Joi.string().required(),
             totalView: Joi.number().required(),
             totalViewDay: Joi.number().required(),
+            priority: Joi.number().required(),
             anchorText: Joi.string().optional(),
             idAnchorText: Joi.string().optional(),
             idAds: Joi.string().optional(),
@@ -233,6 +241,7 @@ const createClickBacklink = {
       then: Joi.object({
         anchorTextUrl: Joi.string().required(),
         urlBacklink: Joi.string().required(),
+        priority: Joi.number().required(),
       }),
     }),
 };
