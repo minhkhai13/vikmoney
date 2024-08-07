@@ -15,7 +15,7 @@ const updateInforLoginEmail = {
 const getAllUser = {
   query: Joi.object().keys({
     page: Joi.number().min(1).required(),
-    limit: Joi.number().min(1).required(),
+    limit: Joi.number().required(),
   }),
 };
 
